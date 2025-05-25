@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaccination Data - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --danger: #dc3545;
+            --success: #28a745;
+            --text: #444;
+        }
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: var(--text); margin: 0; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 1.5rem 0; position: fixed; height: 100%; z-index: 1000; }
+        .sidebar-header { padding: 0 1.5rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .logo { display: flex; align-items: center; margin-bottom: 1rem; }
+        .logo i { font-size: 1.75rem; color: var(--accent); margin-right: 0.75rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 600; }
+        .sidebar-menu { padding: 1.5rem 0; }
+        .menu-item { padding: 0.75rem 1.5rem; display: flex; align-items: center; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.3s ease; }
+        .menu-item:hover, .menu-item.active { background: rgba(255, 255, 255, 0.1); color: white; }
+        .menu-item i { margin-right: 0.75rem; font-size: 1.1rem; width: 20px; text-align: center; }
+        .main-content { flex: 1; margin-left: 250px; padding: 2rem 1.5rem; }
+        h2 { color: var(--secondary); margin-bottom: 2rem; }
+        .vax-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(370px, 1fr)); gap: 1.5rem; }
+        .vax-card { background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(74,111,165,0.07); padding: 1.5rem 1.5rem 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
+        .vax-card .vax-title { font-size: 1.15rem; font-weight: 600; color: #166088; margin-bottom: 0.2rem; }
+        .vax-card .vax-type { font-size: 0.98rem; color: #4a6fa5; margin-bottom: 0.2rem; }
+        .vax-card .vax-status { position: absolute; top: 1.25rem; right: 1.5rem; font-size: 0.95rem; font-weight: 500; padding: 0.2em 0.7em; border-radius: 6px; background: #e3f2fd; color: #166088; }
+        .vax-card .vax-status.completed { background: #d4edda; color: #218838; }
+        .vax-card .vax-status.pending { background: #fff3cd; color: #856404; }
+        .vax-card .vax-label { font-weight: 500; color: #4a6fa5; font-size: 0.97em; }
+        .vax-card .vax-value { margin-left: 0.3em; color: #333; }
+        .vax-card .vax-actions { margin-top: 1rem; display: flex; gap: 0.7rem; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.45rem 1.1rem; border-radius: 6px; font-size: 0.97rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: all 0.2s; }
+        .btn-update { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; }
+        .btn-update:hover { background: var(--secondary); }
+        .btn-delete { background: var(--danger); color: white; }
+        .btn-delete:hover { background: #b52a37; }
+        @media (max-width: 992px) { .sidebar { width: 80px; overflow: hidden; } .logo-text, .menu-item span { display: none; } .menu-item { justify-content: center; padding: 0.75rem; } .menu-item i { margin-right: 0; font-size: 1.25rem; } .main-content { margin-left: 80px; } }
+        @media (max-width: 600px) { .main-content { padding: 0.5rem; } .vax-list { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span class="logo-text">ACADEMY MEDICAL</span>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="{{ url_for('staff_dashboard') }}" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('view_medical_records') }}" class="menu-item">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+                <a href="{{ url_for('view_appointments') }}" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="{{ url_for('view_vaccination_data') }}" class="menu-item active">
+                    <i class="fas fa-syringe"></i>
+                    <span>Vaccinations</span>
+                </a>
+                <a href="{{ url_for('view_sent_alerts') }}" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Health Alerts</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2><i class="fas fa-syringe"></i> Vaccination Data</h2>
+            {% if vaccinations and vaccinations|length > 0 %}
+            <div class="vax-list">
+                {% for v in vaccinations %}
+                <div class="vax-card">
+                    <div class="vax-title">{{ v.vaccine_name }}</div>
+                    <div class="vax-type">Batch: {{ v.batch_number }} | Manufacturer: {{ v.manufacturer }}</div>
+                    <div class="vax-status {{ v.status|lower }}">{{ v.status }}</div>
+                    <div><span class="vax-label">Student:</span> <span class="vax-value">{{ v.student_name }} ({{ v.student_role|capitalize }})</span></div>
+                    <div><span class="vax-label">Student ID:</span> <span class="vax-value">{{ v.student_id }}</span></div>
+                    <div><span class="vax-label">Date Administered:</span> <span class="vax-value">{{ v.date_administered }}</span></div>
+                    <div><span class="vax-label">Dose:</span> <span class="vax-value">{{ v.dose_number }}/{{ v.total_doses }}</span></div>
+                    <div><span class="vax-label">Site of Injection:</span> <span class="vax-value">{{ v.site_of_injection }}</span></div>
+                    <div><span class="vax-label">Next Due Date:</span> <span class="vax-value">{{ v.next_due_date }}</span></div>
+                    {% if v.side_effects %}
+                    <div><span class="vax-label">Side Effects:</span> <span class="vax-value">{{ v.side_effects }}</span></div>
+                    {% endif %}
+                    <div class="vax-actions">
+                        <a href="{{ url_for('update_vaccination_log', vaccination_id=v.vaccination_id) }}" class="btn btn-update"><i class="fas fa-edit"></i> Update</a>
+                        <a href="{{ url_for('delete_vaccination_log', vaccination_id=v.vaccination_id) }}" class="btn btn-delete"><i class="fas fa-trash"></i> Delete</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="text-align:center; color:#888; font-size:1.1em; margin-top:2em;">No vaccination records found.</div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

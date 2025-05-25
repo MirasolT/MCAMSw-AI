@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Encryption</title>
+</head>
+<body>
+    <h2>Manage Encryption Settings</h2>
+
+    <form method="POST">
+        <label for="encryption_enabled">Enable Encryption</label>
+        <input type="checkbox" id="encryption_enabled" name="encryption_enabled">
+        <br><br>
+        <button type="submit">Save Settings</button>
+    </form>
+
+    <a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a>
+</body>
+</html>

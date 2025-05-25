@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Vaccination Log - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: #444; margin: 0; }
+        .container { max-width: 700px; margin: 2rem auto; padding: 1.5rem; background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+        h1 { color: #166088; margin-bottom: 1.5rem; }
+        form label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #166088; }
+        form input, form select, form textarea { width: 100%; padding: 0.5rem 1rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; margin-bottom: 1.2rem; }
+        form textarea { min-height: 80px; resize: vertical; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; border: none; text-decoration: none; }
+        .btn-primary { background: linear-gradient(to right, #4a6fa5, #166088); color: white; }
+        .btn-light { background: #f8f9fa; color: #166088; border: 1px solid #eee; }
+        .btn-light:hover { background: #e9ecef; }
+        .form-actions { display: flex; gap: 1rem; justify-content: flex-start; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Update Vaccination Log</h1>
+        <form method="post">
+            <label for="student_id">Student:</label>
+            <select name="student_id" id="student_id" required>
+                <option value="">Select Student</option>
+                {% for student in students %}
+                    <option value="{{ student.user_id }}" {% if vaccination.student_id == student.user_id %}selected{% endif %}>{{ student.first_name }} {{ student.last_name }} (ID: {{ student.user_id }})</option>
+                {% endfor %}
+            </select>
+            <label for="vaccine_name">Vaccine Name:</label>
+            <input type="text" name="vaccine_name" value="{{ vaccination.vaccine_name }}" required>
+            <label for="vaccine_type">Vaccine Type:</label>
+            <input type="text" name="vaccine_type" value="{{ vaccination.vaccine_type }}" required>
+            <label for="manufacturer">Manufacturer:</label>
+            <input type="text" name="manufacturer" value="{{ vaccination.manufacturer }}" required>
+            <label for="batch_number">Batch Number:</label>
+            <input type="text" name="batch_number" value="{{ vaccination.batch_number }}" required>
+            <label for="dose_number">Dose Number:</label>
+            <input type="number" name="dose_number" value="{{ vaccination.dose_number }}" required>
+            <label for="total_doses">Total Doses:</label>
+            <input type="number" name="total_doses" value="{{ vaccination.total_doses }}" required>
+            <label for="date_administered">Date Administered:</label>
+            <input type="date" name="date_administered" value="{{ vaccination.date_administered }}" required>
+            <label for="next_due_date">Next Due Date:</label>
+            <input type="date" name="next_due_date" value="{{ vaccination.next_due_date }}" required>
+            <label for="site_of_injection">Site of Injection:</label>
+            <input type="text" name="site_of_injection" value="{{ vaccination.site_of_injection }}" required>
+            <label for="side_effects">Side Effects:</label>
+            <textarea name="side_effects">{{ vaccination.side_effects }}</textarea>
+            <label for="status">Status:</label>
+            <select name="status">
+                <option value="Completed" {% if vaccination.status == 'Completed' %}selected{% endif %}>Completed</option>
+                <option value="Pending" {% if vaccination.status == 'Pending' %}selected{% endif %}>Pending</option>
+            </select>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update</button>
+                <a href="{{ url_for('view_vaccination_data') }}" class="btn btn-light"><i class="fas fa-arrow-left"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html> 

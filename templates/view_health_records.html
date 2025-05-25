@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Records - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --text: #444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            position: fixed;
+            height: 100%;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .logo i {
+            font-size: 1.75rem;
+            color: var(--accent);
+            margin-right: 0.75rem;
+        }
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            object-fit: cover;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .user-info h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .user-info p {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        .menu-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+        }
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--secondary);
+        }
+        /* Health Record Card Styles */
+        .records-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .record-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(22,96,136,0.06);
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            border-left: 5px solid var(--primary);
+            transition: box-shadow 0.2s;
+        }
+        .record-card .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #e3f2fd;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-top: 2px;
+        }
+        .record-content { flex: 1; }
+        .record-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .record-label {
+            font-size: 0.95rem;
+            color: #888;
+            min-width: 110px;
+        }
+        .record-value {
+            font-size: 1.05rem;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        .record-status {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            color: #fff;
+            background: var(--success);
+            padding: 0.25rem 1rem;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .record-status.Resolved { background: var(--warning); color: #fff; }
+        .record-status.Archived { background: var(--danger); color: #fff; }
+        .no-records {
+            text-align: center;
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin: 2.5rem 0;
+        }
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            .logo-text, .menu-item span, .user-info {
+                display: none;
+            }
+            .menu-item {
+                justify-content: center;
+                padding: 0.75rem;
+            }
+            .menu-item i {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+        @media (max-width: 800px) {
+            .main-content { padding: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span class="logo-text">ACADEMY MEDICAL</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name={{ username|urlencode }}&background=4a6fa5&color=fff" alt="{{ username }}">
+                    <div class="user-info">
+                        <h3>{{ username }}</h3>
+                        <p>Age: {{ age }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="{{ url_for('student_dashboard') }}" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('view_profile') }}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="{{ url_for('view_health_records') }}" class="menu-item active">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Health Records</span>
+                </a>
+                <a href="{{ url_for('student_view_appointments') }}" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="{{ url_for('student_view_notifications') }}" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="menu-item" id="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Your Health Records</h1>
+            </div>
+            {% if records %}
+                <div class="records-list">
+                    {% for record in records %}
+                        <div class="record-card" 
+                             data-visit_date="{{ record.visit_date }}"
+                             data-height="{{ record.height_cm }}"
+                             data-weight="{{ record.weight_kg }}"
+                             data-blood_type="{{ record.blood_type }}"
+                             data-allergies="{{ record.allergies }}"
+                             data-medical_conditions="{{ record.medical_conditions }}"
+                             data-temperature="{{ record.temperature_c if record.temperature_c is defined else '' }}"
+                             data-blood_pressure="{{ record.blood_pressure if record.blood_pressure is defined else '' }}"
+                             data-heart_rate="{{ record.heart_rate if record.heart_rate is defined else '' }}"
+                             data-diagnosis="{{ record.diagnosis if record.diagnosis is defined else '' }}"
+                             data-treatment="{{ record.treatment if record.treatment is defined else '' }}"
+                             data-status="{{ record.status }}">
+                            <div class="icon"><i class="fas fa-file-medical-alt"></i></div>
+                            <div class="record-content">
+                                <div class="record-row">
+                                    <span class="record-label">Visit Date:</span>
+                                    <span class="record-value">{{ record.visit_date }}</span>
+                                </div>
+                                <div class="record-row">
+                                    <span class="record-label">Height:</span>
+                                    <span class="record-value">{{ record.height_cm }} cm</span>
+                                    <span class="record-label">Weight:</span>
+                                    <span class="record-value">{{ record.weight_kg }} kg</span>
+                                </div>
+                                <div class="record-row">
+                                    <span class="record-label">Blood Type:</span>
+                                    <span class="record-value">{{ record.blood_type }}</span>
+                                    <span class="record-label">Allergies:</span>
+                                    <span class="record-value">{{ record.allergies }}</span>
+                                </div>
+                                <div class="record-row">
+                                    <span class="record-label">Medical Conditions:</span>
+                                    <span class="record-value">{{ record.medical_conditions }}</span>
+                                </div>
+                                {% if record.status %}
+                                <span class="record-status {{ record.status }}">{{ record.status }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-records">No health records found.</div>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    // SweetAlert2 logout confirmation
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Confirm Logout',
+                text: 'Are you sure you want to log out?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Logout',
+                cancelButtonText: 'Cancel',
+                showClass: { popup: 'animate__animated animate__fadeInDown' },
+                hideClass: { popup: 'animate__animated animate__fadeOutUp' },
+                customClass: { confirmButton: 'swal2-confirm swal2-styled' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = logoutLink.getAttribute('href');
+                }
+            });
+        });
+    }
+    // SweetAlert2 modal for health record details
+    document.querySelectorAll('.record-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+            Swal.fire({
+                title: 'Health Record Details',
+                html: `<div style='text-align:left;'>
+                    <b>Visit Date:</b> ${card.getAttribute('data-visit_date') || '-'}<br>
+                    <b>Height:</b> ${card.getAttribute('data-height') || '-'} cm<br>
+                    <b>Weight:</b> ${card.getAttribute('data-weight') || '-'} kg<br>
+                    <b>Blood Type:</b> ${card.getAttribute('data-blood_type') || '-'}<br>
+                    <b>Allergies:</b> ${card.getAttribute('data-allergies') || '-'}<br>
+                    <b>Medical Conditions:</b> ${card.getAttribute('data-medical_conditions') || '-'}<br>
+                    <b>Temperature:</b> ${card.getAttribute('data-temperature') || '-'} °C<br>
+                    <b>Blood Pressure:</b> ${card.getAttribute('data-blood_pressure') || '-'}<br>
+                    <b>Heart Rate:</b> ${card.getAttribute('data-heart_rate') || '-'}<br>
+                    <b>Diagnosis:</b> ${card.getAttribute('data-diagnosis') || '-'}<br>
+                    <b>Treatment:</b> ${card.getAttribute('data-treatment') || '-'}<br>
+                    <b>Status:</b> ${card.getAttribute('data-status') || '-'}
+                </div>`,
+                icon: 'info',
+                showConfirmButton: true,
+                confirmButtonText: 'Close',
+                customClass: { popup: 'swal2-card-modal' }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --text: #444;
+        }
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: var(--text); margin: 0; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 1.5rem 0; position: fixed; height: 100%; z-index: 1000; }
+        .sidebar-header { padding: 0 1.5rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .logo { display: flex; align-items: center; margin-bottom: 1rem; }
+        .logo i { font-size: 1.75rem; color: var(--accent); margin-right: 0.75rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 600; }
+        .user-profile { display: flex; align-items: center; margin-top: 1rem; }
+        .user-profile img { width: 40px; height: 40px; border-radius: 50%; margin-right: 0.75rem; object-fit: cover; background-color: rgba(255, 255, 255, 0.1); }
+        .user-info h3 { font-size: 0.9rem; font-weight: 500; }
+        .user-info p { font-size: 0.75rem; opacity: 0.8; }
+        .sidebar-menu { padding: 1.5rem 0; }
+        .menu-item { padding: 0.75rem 1.5rem; display: flex; align-items: center; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.3s ease; }
+        .menu-item:hover, .menu-item.active { background: rgba(255, 255, 255, 0.1); color: white; }
+        .menu-item i { margin-right: 0.75rem; font-size: 1.1rem; width: 20px; text-align: center; }
+        .main-content { flex: 1; margin-left: 250px; padding: 2rem 1.5rem; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(74,111,165,0.07); padding: 2rem 2.5rem; max-width: 900px; margin: 2rem auto; }
+        .card-header { font-size: 1.3rem; color: var(--secondary); font-weight: 600; margin-bottom: 1.2rem; display: flex; align-items: center; justify-content: space-between; }
+        .btn { display: inline-block; background: linear-gradient(to right, var(--primary), var(--secondary)); color: #fff; border: none; border-radius: 7px; padding: 0.7rem 2.2rem; font-size: 1.08rem; font-weight: 600; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+        .btn:hover { background: var(--secondary); }
+        .alert { background: #e3f2fd; color: #166088; border-left: 5px solid var(--primary); padding: 1rem 1.2rem; border-radius: 8px; margin-bottom: 1.2rem; font-size: 1rem; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; background: #fff; }
+        th, td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        th { background: #f8f9fa; color: var(--secondary); font-weight: 600; }
+        tr:last-child td { border-bottom: none; }
+        .action-link { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .action-link:hover { text-decoration: underline; }
+        @media (max-width: 900px) { .main-content { padding: 1rem; } .card { padding: 1.2rem 0.5rem; } }
+        @media (max-width: 600px) { .main-content { padding: 0.5rem; } .card { padding: 0.7rem 0.2rem; } th, td { padding: 0.6rem 0.5rem; } }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span class="logo-text">ACADEMY MEDICAL</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name={{ session['username']|urlencode }}&background=4a6fa5&color=fff" alt="{{ session['username'] }}">
+                    <div class="user-info">
+                        <h3>{{ session['username'] }}</h3>
+                        <p>Parent Account</p>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="{{ url_for('parent_dashboard') }}" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('parent_view_student_profile') }}" class="menu-item">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Student Profile</span>
+                </a>
+                <a href="{{ url_for('parent_view_health_records') }}" class="menu-item">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Health Records</span>
+                </a>
+                <a href="{{ url_for('parent_view_vaccinations') }}" class="menu-item">
+                    <i class="fas fa-syringe"></i>
+                    <span>Vaccination Logs</span>
+                </a>
+                <a href="{{ url_for('parent_view_appointments') }}" class="menu-item active">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="{{ url_for('parent_view_notifications') }}" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <span><i class="fas fa-calendar-check"></i> Appointments</span>
+                    <a href="{{ url_for('parent_book_appointment') }}" class="btn"><i class="fas fa-calendar-plus"></i> Book New Appointment</a>
+                </div>
+                <!-- Flash messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="alert">
+                            {% for category, message in messages %}
+                                <div>{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                <div class="table-responsive">
+                    {% if appointments and appointments|length > 0 %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Appointment ID</th>
+                                <th>Student</th>
+                                <th>Appointment Date</th>
+                                <th>Reason</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                                <tr>
+                                    <td>{{ appointment.appointment_id }}</td>
+                                    <td>
+                                        <strong>{{ appointment.first_name }} {{ appointment.last_name }}</strong>
+                                        <div style="font-size:0.95em;color:#888;">ID: {{ appointment.student_id }}</div>
+                                    </td>
+                                    <td>{{ appointment.appointment_date }}</td>
+                                    <td>{{ appointment.reason }}</td>
+                                    <td><a href="{{ url_for('parent_update_appointment', appointment_id=appointment.appointment_id) }}" class="action-link"><i class="fas fa-edit"></i> Update</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        <div class="alert" style="background:#fff3cd;color:#856404;border-left:5px solid #ffc107;">No appointments found. You can book a new appointment above.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Medical Record</title>
+</head>
+<body>
+    <h2>Update Medical Record</h2>
+
+    <!-- Display flash messages if any -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <label for="height">Height (cm):</label>
+        <input type="number" step="0.1" id="height" name="height" value="{{ health_record.height_cm }}" required><br><br>
+
+        <label for="weight">Weight (kg):</label>
+        <input type="number" step="0.1" id="weight" name="weight" value="{{ health_record.weight_kg }}" required><br><br>
+
+        <label for="medical_conditions">Medical Conditions:</label>
+        <textarea id="medical_conditions" name="medical_conditions" required>{{ health_record.medical_conditions }}</textarea><br><br>
+
+        <label for="allergies">Allergies:</label>
+        <textarea id="allergies" name="allergies" required>{{ health_record.allergies }}</textarea><br><br>
+
+        <label for="treatment_plan">Treatment Plan:</label>
+        <textarea id="treatment_plan" name="treatment_plan" required>{{ health_record.treatment_plan }}</textarea><br><br>
+
+        <button type="submit">Update Medical Record</button>
+    </form>
+
+    <a href="{{ url_for('parent_view_health_records') }}">Back to Health Records</a>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Vaccinations - Academy Medical Clinic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: #444; margin: 0; }
+        .container { max-width: 900px; margin: 2rem auto; padding: 1.5rem; background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+        h1 { color: #166088; margin-bottom: 1.5rem; }
+        .vaccination-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        .vax-card { background: #f8f9fa; border-radius: 10px; box-shadow: 0 2px 8px rgba(74,111,165,0.07); padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
+        .vax-card .vax-title { font-size: 1.15rem; font-weight: 600; color: #166088; margin-bottom: 0.2rem; }
+        .vax-card .vax-type { font-size: 0.98rem; color: #4a6fa5; margin-bottom: 0.2rem; }
+        .vax-card .vax-status { position: absolute; top: 1.25rem; right: 1.5rem; font-size: 0.95rem; font-weight: 500; padding: 0.2em 0.7em; border-radius: 6px; background: #e3f2fd; color: #166088; }
+        .vax-card .vax-status.completed { background: #d4edda; color: #218838; }
+        .vax-card .vax-status.pending { background: #fff3cd; color: #856404; }
+        .vax-card .vax-label { font-weight: 500; color: #4a6fa5; font-size: 0.97em; }
+        .vax-card .vax-value { margin-left: 0.3em; color: #333; }
+        .vax-card .vax-side-effects { font-size: 0.97em; color: #dc3545; margin-top: 0.2em; }
+        @media (max-width: 600px) { .container { padding: 0.5rem; } .vaccination-list { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-syringe"></i> My Vaccination Logs</h1>
+        {% if vaccinations and vaccinations|length > 0 %}
+        <div class="vaccination-list">
+            {% for v in vaccinations %}
+            <div class="vax-card">
+                <div class="vax-title">{{ v.vaccine_name }}</div>
+                <div class="vax-type">{{ v.vaccine_type }}</div>
+                <div class="vax-status {{ v.status|lower }}">{{ v.status }}</div>
+                <div><span class="vax-label">Date Administered:</span> <span class="vax-value">{{ v.date_administered }}</span></div>
+                <div><span class="vax-label">Dose:</span> <span class="vax-value">{{ v.dose_number }}/{{ v.total_doses }}</span></div>
+                <div><span class="vax-label">Batch Number:</span> <span class="vax-value">{{ v.batch_number }}</span></div>
+                <div><span class="vax-label">Manufacturer:</span> <span class="vax-value">{{ v.manufacturer }}</span></div>
+                <div><span class="vax-label">Site of Injection:</span> <span class="vax-value">{{ v.site_of_injection }}</span></div>
+                <div><span class="vax-label">Next Due Date:</span> <span class="vax-value">{{ v.next_due_date }}</span></div>
+                {% if v.side_effects %}
+                <div class="vax-side-effects"><span class="vax-label">Side Effects:</span> {{ v.side_effects }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align:center; color:#888; font-size:1.1em; margin-top:2em;">No vaccination records found.</div>
+        {% endif %}
+    </div>
+</body>
+</html> 

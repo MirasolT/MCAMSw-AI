@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Health Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: #444; margin: 0; }
+        .container { max-width: 1200px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(74,111,165,0.07); padding: 2rem; }
+        h2 { color: #166088; margin-bottom: 1.5rem; }
+        .export-form { margin-bottom: 2rem; }
+        .export-form label { font-weight: 500; margin-right: 0.5rem; }
+        .export-form select, .export-form button { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid #eee; margin-right: 0.5rem; }
+        .export-form button { background: linear-gradient(to right, #4a6fa5, #166088); color: #fff; border: none; font-weight: 600; }
+        .dashboard-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2.5rem; }
+        .chart-card { background: #f8f9fa; border-radius: 10px; box-shadow: 0 2px 8px rgba(22,96,136,0.06); padding: 1.2rem; }
+        .chart-title { font-size: 1.1rem; color: #166088; margin-bottom: 0.5rem; font-weight: 600; }
+        .filter-group { margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+        .filter-group label { font-weight: 500; color: #166088; }
+        .filter-group select { padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid #ccc; }
+        .data-section { margin-bottom: 2.5rem; }
+        .data-section h3 { color: #4a6fa5; margin-bottom: 0.7rem; font-size: 1.15rem; }
+        .responsive-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; background: #fff; border-radius: 8px; overflow: hidden; }
+        .responsive-table th, .responsive-table td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 0.97rem; }
+        .responsive-table th { background: #f8f9fa; color: #166088; font-weight: 600; }
+        .responsive-table tr:last-child td { border-bottom: none; }
+        .back-link { display: inline-block; margin-top: 1.5rem; color: #4a6fa5; text-decoration: none; font-weight: 500; }
+        .back-link:hover { text-decoration: underline; }
+        @media (max-width: 900px) { .dashboard-charts { grid-template-columns: 1fr; } .container { padding: 1rem; } }
+        @media (max-width: 600px) { .container { padding: 0.5rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Generate Health Report</h2>
+        <form method="POST" class="export-form" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <label for="export_format">Export Format:</label>
+            <select name="export_format" id="export_format" required>
+                <option value="txt">Text (.txt)</option>
+                <option value="ini">INI (.ini)</option>
+            </select>
+            <label for="globalFilter">Filter Year:</label>
+            <select id="globalFilter">
+                <option value="all">All</option>
+                {% for y in years %}
+                <option value="{{ y }}">{{ y }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit"><i class="fas fa-download"></i> Download Report</button>
+        </form>
+        <div class="dashboard-charts">
+            <div class="chart-card">
+                <div class="chart-title">Users per Role</div>
+                <div class="filter-group">
+                    <label for="roleFilter">Role:</label>
+                    <select id="roleFilter">
+                        <option value="all">All</option>
+                        {% for r in users_per_role %}
+                        <option value="{{ r.role }}">{{ r.role|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <canvas id="usersRoleChart" height="220"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Appointments per Day</div>
+                <div class="filter-group">
+                    <label for="apptDateFilter">Date:</label>
+                    <select id="apptDateFilter">
+                        <option value="all">All</option>
+                        {% for a in appt_per_day %}
+                        <option value="{{ a.appointment_date }}">{{ a.appointment_date }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <canvas id="appointmentsDayChart" height="220"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Vaccinations per Month</div>
+                <div class="filter-group">
+                    <label for="vaxMonthFilter">Month:</label>
+                    <select id="vaxMonthFilter">
+                        <option value="all">All</option>
+                        {% for v in vax_per_month %}
+                        <option value="{{ v.month }}">{{ v.month }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <canvas id="vaccinationsMonthChart" height="220"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Health Records per Status</div>
+                <div class="filter-group">
+                    <label for="healthStatusFilter">Status:</label>
+                    <select id="healthStatusFilter">
+                        <option value="all">All</option>
+                        {% for h in health_per_status %}
+                        <option value="{{ h.status }}">{{ h.status }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <canvas id="healthStatusChart" height="220"></canvas>
+            </div>
+        </div>
+        <div class="data-section">
+            <h3>All Users</h3>
+            <div class="filter-group">
+                <label for="userRoleTableFilter">Role:</label>
+                <select id="userRoleTableFilter">
+                    <option value="all">All</option>
+                    {% for r in users_per_role %}
+                    <option value="{{ r.role }}">{{ r.role|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="overflow-x:auto;">
+            <table class="responsive-table" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Age</th><th>Gender</th><th>Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr data-role="{{ u.role }}">
+                        <td>{{ u.user_id }}</td><td>{{ u.username }}</td><td>{{ u.first_name }} {{ u.last_name }}</td><td>{{ u.email }}</td><td>{{ u.role }}</td><td>{{ u.age }}</td><td>{{ u.gender }}</td><td>{{ 'Yes' if u.is_active else 'No' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="data-section">
+            <h3>All Health Records</h3>
+            <div class="filter-group">
+                <label for="healthStatusTableFilter">Status:</label>
+                <select id="healthStatusTableFilter">
+                    <option value="all">All</option>
+                    {% for h in health_per_status %}
+                    <option value="{{ h.status }}">{{ h.status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="overflow-x:auto;">
+            <table class="responsive-table" id="healthTable">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Student ID</th><th>Height</th><th>Weight</th><th>Blood Type</th><th>Conditions</th><th>Visit Date</th><th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in health_records %}
+                    <tr data-status="{{ r.status }}">
+                        <td>{{ r.record_id }}</td><td>{{ r.student_id }}</td><td>{{ r.height_cm }} cm</td><td>{{ r.weight_kg }} kg</td><td>{{ r.blood_type }}</td><td>{{ r.medical_conditions }}</td><td>{{ r.visit_date }}</td><td>{{ r.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="data-section">
+            <h3>All Appointments</h3>
+            <div class="filter-group">
+                <label for="apptStatusTableFilter">Status:</label>
+                <select id="apptStatusTableFilter">
+                    <option value="all">All</option>
+                    {% for a in appointments|groupby('status') %}
+                    <option value="{{ a.grouper }}">{{ a.grouper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="overflow-x:auto;">
+            <table class="responsive-table" id="appointmentsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Student ID</th><th>Date</th><th>Time</th><th>Type</th><th>Status</th><th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in appointments %}
+                    <tr data-status="{{ a.status }}">
+                        <td>{{ a.appointment_id }}</td><td>{{ a.student_id }}</td><td>{{ a.appointment_date }}</td><td>{{ a.appointment_time }}</td><td>{{ a.appointment_type }}</td><td>{{ a.status }}</td><td>{{ a.reason }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="data-section">
+            <h3>All Vaccinations</h3>
+            <div class="filter-group">
+                <label for="vaxStatusTableFilter">Status:</label>
+                <select id="vaxStatusTableFilter">
+                    <option value="all">All</option>
+                    {% for v in vaccinations|groupby('status') %}
+                    <option value="{{ v.grouper }}">{{ v.grouper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="overflow-x:auto;">
+            <table class="responsive-table" id="vaccinationsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Student ID</th><th>Vaccine</th><th>Type</th><th>Date</th><th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in vaccinations %}
+                    <tr data-status="{{ v.status }}">
+                        <td>{{ v.vaccination_id }}</td><td>{{ v.student_id }}</td><td>{{ v.vaccine_name }}</td><td>{{ v.vaccine_type }}</td><td>{{ v.date_administered }}</td><td>{{ v.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="data-section">
+            <h3>All Notifications</h3>
+            <div class="filter-group">
+                <label for="notifTypeTableFilter">Type:</label>
+                <select id="notifTypeTableFilter">
+                    <option value="all">All</option>
+                    {% for n in notifications|groupby('message_type') %}
+                    <option value="{{ n.grouper }}">{{ n.grouper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="overflow-x:auto;">
+            <table class="responsive-table" id="notificationsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>To</th><th>Type</th><th>Subject</th><th>Sent</th><th>Read</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for n in notifications %}
+                    <tr data-type="{{ n.message_type }}">
+                        <td>{{ n.notification_id }}</td><td>{{ n.recipient_id }}</td><td>{{ n.message_type }}</td><td>{{ n.subject }}</td><td>{{ n.sent_at }}</td><td>{{ 'Yes' if n.is_read else 'No' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Admin Dashboard</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script type="application/javascript">
+        // Prepare data from Jinja
+        const usersPerRole = {{ users_per_role|tojson|safe }};
+        const apptPerDay = {{ appt_per_day|tojson|safe }};
+        const vaxPerMonth = {{ vax_per_month|tojson|safe }};
+        const healthPerStatus = {{ health_per_status|tojson|safe }};
+        const allAppointments = {{ appointments|tojson|safe }};
+        const allVaccinations = {{ vaccinations|tojson|safe }};
+        const allHealthRecords = {{ health_records|tojson|safe }};
+        const allUsers = {{ users|tojson|safe }};
+        const allNotifications = {{ notifications|tojson|safe }};
+
+        // --- Chart.js Color Palettes ---
+        const palette = [
+            '#4a6fa5', '#4fc3f7', '#166088', '#28a745', '#ffc107', '#dc3545', '#7e57c2', '#ff7043', '#26a69a', '#8d6e63'
+        ];
+
+        // --- Global Filter ---
+        let globalYear = 'all';
+        document.getElementById('globalFilter').addEventListener('change', function(e) {
+            globalYear = e.target.value;
+            renderUsersRoleChart(document.getElementById('roleFilter').value);
+            renderApptDayChart(document.getElementById('apptDateFilter').value);
+            renderVaxMonthChart(document.getElementById('vaxMonthFilter').value);
+            renderHealthStatusChart(document.getElementById('healthStatusFilter').value);
+            filterAllTables();
+        });
+
+        // Users per Role Pie
+        let usersRoleChart;
+        function renderUsersRoleChart(filterRole = 'all') {
+            let filteredUsers = allUsers;
+            if (globalYear !== 'all') {
+                filteredUsers = allUsers.filter(u => {
+                    // Try to filter by created year if available, else skip
+                    return (u.created_at ? u.created_at.startsWith(globalYear) : true);
+                });
+            }
+            let roleCounts = {};
+            filteredUsers.forEach(u => {
+                if (filterRole !== 'all' && u.role !== filterRole) return;
+                roleCounts[u.role] = (roleCounts[u.role] || 0) + 1;
+            });
+            const labels = Object.keys(roleCounts);
+            const dataArr = Object.values(roleCounts);
+            const data = {
+                labels: labels,
+                datasets: [{
+                    data: dataArr,
+                    backgroundColor: palette.slice(0, labels.length)
+                }]
+            };
+            const ctx = document.getElementById('usersRoleChart').getContext('2d');
+            if (usersRoleChart) usersRoleChart.destroy();
+            usersRoleChart = new Chart(ctx, {
+                type: 'pie',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        title: { display: false }
+                    },
+                    animation: { duration: 1200, easing: 'easeOutQuart' }
+                }
+            });
+        }
+        renderUsersRoleChart();
+        document.getElementById('roleFilter').addEventListener('change', e => renderUsersRoleChart(e.target.value));
+
+        // Appointments per Day Line
+        let apptDayChart;
+        function renderApptDayChart(filterDate = 'all') {
+            let filtered = apptPerDay;
+            if (globalYear !== 'all') {
+                filtered = filtered.filter(a => a.appointment_date.startsWith(globalYear));
+            }
+            if (filterDate !== 'all') {
+                filtered = filtered.filter(a => a.appointment_date === filterDate);
+            }
+            const data = {
+                labels: filtered.map(a => a.appointment_date),
+                datasets: [{
+                    label: 'Appointments',
+                    data: filtered.map(a => a.count),
+                    borderColor: palette[0],
+                    backgroundColor: 'rgba(74,111,165,0.15)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4
+                }]
+            };
+            const ctx = document.getElementById('appointmentsDayChart').getContext('2d');
+            if (apptDayChart) apptDayChart.destroy();
+            apptDayChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: false }
+                    },
+                    animation: { duration: 1200, easing: 'easeOutQuart' },
+                    scales: {
+                        x: { title: { display: true, text: 'Date' } },
+                        y: { title: { display: true, text: 'Appointments' }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+        renderApptDayChart();
+        document.getElementById('apptDateFilter').addEventListener('change', e => renderApptDayChart(e.target.value));
+
+        // Vaccinations per Month Line
+        let vaxMonthChart;
+        function renderVaxMonthChart(filterMonth = 'all') {
+            let filtered = vaxPerMonth;
+            if (globalYear !== 'all') {
+                filtered = filtered.filter(v => v.month.startsWith(globalYear));
+            }
+            if (filterMonth !== 'all') {
+                filtered = filtered.filter(v => v.month === filterMonth);
+            }
+            const data = {
+                labels: filtered.map(v => v.month),
+                datasets: [{
+                    label: 'Vaccinations',
+                    data: filtered.map(v => v.count),
+                    borderColor: palette[3],
+                    backgroundColor: 'rgba(40,167,69,0.15)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4
+                }]
+            };
+            const ctx = document.getElementById('vaccinationsMonthChart').getContext('2d');
+            if (vaxMonthChart) vaxMonthChart.destroy();
+            vaxMonthChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: false }
+                    },
+                    animation: { duration: 1200, easing: 'easeOutQuart' },
+                    scales: {
+                        x: { title: { display: true, text: 'Month' } },
+                        y: { title: { display: true, text: 'Vaccinations' }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+        renderVaxMonthChart();
+        document.getElementById('vaxMonthFilter').addEventListener('change', e => renderVaxMonthChart(e.target.value));
+
+        // Health Records per Status Doughnut
+        let healthStatusChart;
+        function renderHealthStatusChart(filterStatus = 'all') {
+            let filtered = healthPerStatus;
+            if (globalYear !== 'all') {
+                filtered = allHealthRecords.filter(r => r.visit_date && r.visit_date.startsWith(globalYear));
+                let statusCounts = {};
+                filtered.forEach(r => {
+                    if (filterStatus !== 'all' && r.status !== filterStatus) return;
+                    statusCounts[r.status] = (statusCounts[r.status] || 0) + 1;
+                });
+                filtered = Object.keys(statusCounts).map(s => ({ status: s, count: statusCounts[s] }));
+            } else if (filterStatus !== 'all') {
+                filtered = filtered.filter(h => h.status === filterStatus);
+            }
+            const data = {
+                labels: filtered.map(h => h.status),
+                datasets: [{
+                    data: filtered.map(h => h.count),
+                    backgroundColor: palette.slice(0, filtered.length)
+                }]
+            };
+            const ctx = document.getElementById('healthStatusChart').getContext('2d');
+            if (healthStatusChart) healthStatusChart.destroy();
+            healthStatusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        title: { display: false }
+                    },
+                    animation: { duration: 1200, easing: 'easeOutQuart' }
+                }
+            });
+        }
+        renderHealthStatusChart();
+        document.getElementById('healthStatusFilter').addEventListener('change', e => renderHealthStatusChart(e.target.value));
+
+        // --- Table Filters ---
+        function filterAllTables() {
+            // Users Table
+            const userRole = document.getElementById('userRoleTableFilter').value;
+            const usersTable = document.getElementById('usersTable');
+            Array.from(usersTable.tBodies[0].rows).forEach(row => {
+                let show = true;
+                if (userRole !== 'all' && row.getAttribute('data-role') !== userRole) show = false;
+                if (globalYear !== 'all') {
+                    const userId = row.cells[0].innerText;
+                    const user = allUsers.find(u => u.user_id == userId);
+                    if (user && user.created_at && !user.created_at.startsWith(globalYear)) show = false;
+                }
+                row.style.display = show ? '' : 'none';
+            });
+            // Health Table
+            const healthStatus = document.getElementById('healthStatusTableFilter').value;
+            const healthTable = document.getElementById('healthTable');
+            Array.from(healthTable.tBodies[0].rows).forEach(row => {
+                let show = true;
+                if (healthStatus !== 'all' && row.getAttribute('data-status') !== healthStatus) show = false;
+                if (globalYear !== 'all') {
+                    const visitDate = row.cells[6].innerText;
+                    if (!visitDate.startsWith(globalYear)) show = false;
+                }
+                row.style.display = show ? '' : 'none';
+            });
+            // Appointments Table
+            const apptStatus = document.getElementById('apptStatusTableFilter').value;
+            const appointmentsTable = document.getElementById('appointmentsTable');
+            Array.from(appointmentsTable.tBodies[0].rows).forEach(row => {
+                let show = true;
+                if (apptStatus !== 'all' && row.getAttribute('data-status') !== apptStatus) show = false;
+                if (globalYear !== 'all') {
+                    const apptDate = row.cells[2].innerText;
+                    if (!apptDate.startsWith(globalYear)) show = false;
+                }
+                row.style.display = show ? '' : 'none';
+            });
+            // Vaccinations Table
+            const vaxStatus = document.getElementById('vaxStatusTableFilter').value;
+            const vaccinationsTable = document.getElementById('vaccinationsTable');
+            Array.from(vaccinationsTable.tBodies[0].rows).forEach(row => {
+                let show = true;
+                if (vaxStatus !== 'all' && row.getAttribute('data-status') !== vaxStatus) show = false;
+                if (globalYear !== 'all') {
+                    const vaxDate = row.cells[4].innerText;
+                    if (!vaxDate.startsWith(globalYear)) show = false;
+                }
+                row.style.display = show ? '' : 'none';
+            });
+            // Notifications Table
+            const notifType = document.getElementById('notifTypeTableFilter').value;
+            const notificationsTable = document.getElementById('notificationsTable');
+            Array.from(notificationsTable.tBodies[0].rows).forEach(row => {
+                let show = true;
+                if (notifType !== 'all' && row.getAttribute('data-type') !== notifType) show = false;
+                if (globalYear !== 'all') {
+                    const notifDate = row.cells[4].innerText;
+                    if (!notifDate.startsWith(globalYear)) show = false;
+                }
+                row.style.display = show ? '' : 'none';
+            });
+        }
+        // Attach table filter listeners
+        function filterTable(tableId, attr, filterId) {
+            const table = document.getElementById(tableId);
+            const filter = document.getElementById(filterId);
+            filter.addEventListener('change', function() {
+                filterAllTables();
+            });
+        }
+        filterTable('usersTable', 'data-role', 'userRoleTableFilter');
+        filterTable('healthTable', 'data-status', 'healthStatusTableFilter');
+        filterTable('appointmentsTable', 'data-status', 'apptStatusTableFilter');
+        filterTable('vaccinationsTable', 'data-status', 'vaxStatusTableFilter');
+        filterTable('notificationsTable', 'data-type', 'notifTypeTableFilter');
+    </script>
+</body>
+</html>

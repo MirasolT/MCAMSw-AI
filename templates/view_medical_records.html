@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Medical Records - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --text: #444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; color: var(--text); line-height: 1.6; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 1.5rem 0; position: fixed; height: 100%; transition: all 0.3s ease; z-index: 1000; }
+        .sidebar-header { padding: 0 1.5rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .logo { display: flex; align-items: center; margin-bottom: 1rem; }
+        .logo i { font-size: 1.75rem; color: var(--accent); margin-right: 0.75rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 600; }
+        .sidebar-menu { padding: 1.5rem 0; }
+        .menu-item { padding: 0.75rem 1.5rem; display: flex; align-items: center; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.3s ease; }
+        .menu-item:hover, .menu-item.active { background: rgba(255, 255, 255, 0.1); color: white; }
+        .menu-item i { margin-right: 0.75rem; font-size: 1.1rem; width: 20px; text-align: center; }
+        .main-content { flex: 1; margin-left: 250px; padding: 1.5rem; transition: all 0.3s ease; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; margin-bottom: 1.5rem; }
+        .header h1 { font-size: 1.75rem; color: var(--secondary); }
+        .card { background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); margin-bottom: 1.5rem; overflow: hidden; }
+        .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .card-header h2 { font-size: 1.25rem; color: var(--secondary); }
+        .card-body { padding: 1.5rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; background: white; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { background-color: #f8f9fa; color: var(--secondary); font-weight: 600; }
+        tr:last-child td { border-bottom: none; }
+        .action-btn, .action-btn-delete { display: inline-block; padding: 6px 14px; border-radius: 5px; font-size: 0.95rem; font-weight: 500; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; }
+        .action-btn { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; margin-right: 0.5rem; }
+        .action-btn:hover { background: var(--secondary); color: #fff; }
+        .action-btn-delete { background: var(--danger); color: white; }
+        .action-btn-delete:hover { background: #b71c1c; }
+        .back-btn { margin-top: 1.5rem; display: inline-flex; align-items: center; background: var(--light); color: var(--secondary); border: 1px solid #eee; padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: 500; text-decoration: none; transition: all 0.2s; }
+        .back-btn i { margin-right: 0.5rem; }
+        .back-btn:hover { background: #e9ecef; }
+        @media (max-width: 992px) { .sidebar { width: 80px; overflow: hidden; } .logo-text, .menu-item span { display: none; } .menu-item { justify-content: center; padding: 0.75rem; } .menu-item i { margin-right: 0; font-size: 1.25rem; } .main-content { margin-left: 80px; } }
+        @media (max-width: 768px) { .header { flex-direction: column; align-items: flex-start; gap: 1rem; } table, thead, tbody, th, td, tr { display: block; } th, td { padding: 10px 5px; } th { background: none; color: var(--secondary); } tr { margin-bottom: 1rem; } }
+        .btn-status {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 5px;
+            font-size: 0.93rem;
+            font-weight: 500;
+            border: none;
+            margin-right: 3px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+            background: var(--light);
+            color: var(--secondary);
+            box-shadow: 0 1px 4px rgba(74,111,165,0.07);
+        }
+        .btn-status[data-status="Active"] {
+            background: linear-gradient(90deg, #4fc3f7 0%, #4a6fa5 100%);
+            color: #fff;
+        }
+        .btn-status[data-status="Resolved"] {
+            background: linear-gradient(90deg, #28a745 0%, #4fc3f7 100%);
+            color: #fff;
+        }
+        .btn-status[data-status="Archived"] {
+            background: linear-gradient(90deg, #bdbdbd 0%, #888 100%);
+            color: #fff;
+        }
+        .btn-status:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-status:not(:disabled):hover {
+            filter: brightness(1.08);
+            box-shadow: 0 2px 8px rgba(74,111,165,0.13);
+        }
+        .record-status {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.7rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(74,111,165,0.04);
+            display: inline-block;
+        }
+        .record-status span {
+            font-size: 1.01rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-right: 0.7rem;
+        }
+        .status-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.2rem;
+            margin-top: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span class="logo-text">ACADEMY MEDICAL</span>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="{{ url_for('staff_dashboard') }}" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('view_medical_records') }}" class="menu-item active">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+                <a href="{{ url_for('view_appointments') }}" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="{{ url_for('view_vaccination_data') }}" class="menu-item">
+                    <i class="fas fa-syringe"></i>
+                    <span>Vaccinations</span>
+                </a>
+                <a href="{{ url_for('view_sent_alerts') }}" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Health Alerts</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Medical Records</h1>
+            </div>
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h2>All Medical Records</h2>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Height (cm)</th>
+                                <th>Weight (kg)</th>
+                                <th>Blood Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records %}
+                            <tr>
+                                <td>{{ record.student_id }}</td>
+                                <td>{{ record.height_cm }}</td>
+                                <td>{{ record.weight_kg }}</td>
+                                <td>{{ record.blood_type }}</td>
+                                <td>
+                                    <a href="{{ url_for('update_medical_record', record_id=record.record_id) }}" class="action-btn"><i class="fas fa-edit"></i> Edit</a>
+                                    <form method="POST" action="{{ url_for('delete_medical_record', record_id=record.record_id) }}" style="display:inline;">
+                                        <button type="submit" class="action-btn-delete"><i class="fas fa-trash"></i> Delete</button>
+                                    </form>
+                                    <div class="record-status" style="margin-top:0.5rem;">
+                                        <span>Status: <b>{{ record.status }}</b></span>
+                                        <div class="status-btns" style="margin-top:0.3rem;">
+                                            <button class="btn-status" data-id="{{ record.record_id }}" data-status="Active" {% if record.status == 'Active' %}disabled{% endif %} style="margin-right:2px;">Active</button>
+                                            <button class="btn-status" data-id="{{ record.record_id }}" data-status="Resolved" {% if record.status == 'Resolved' %}disabled{% endif %} style="margin-right:2px;">Resolved</button>
+                                            <button class="btn-status" data-id="{{ record.record_id }}" data-status="Archived" {% if record.status == 'Archived' %}disabled{% endif %}>Archive</button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="{{ url_for('staff_dashboard') }}" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-status').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const recordId = this.getAttribute('data-id');
+                const newStatus = this.getAttribute('data-status');
+                fetch(`/update_health_record_status/${recordId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+                    body: JSON.stringify({status: newStatus})
+                }).then(resp => {
+                    if (resp.status === 204) {
+                        // Update status in UI
+                        const parent = this.closest('.record-status');
+                        if (parent) {
+                            parent.querySelector('span').innerHTML = 'Status: <b>' + newStatus + '</b>';
+                            parent.querySelectorAll('.btn-status').forEach(b => b.disabled = false);
+                            this.disabled = true;
+                        }
+                    }
+                });
+            });
+        });
+    });
+    </script>
+</body>
+</html>

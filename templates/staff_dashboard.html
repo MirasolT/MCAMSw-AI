@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic Staff Dashboard - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --text: #444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            position: fixed;
+            height: 100%;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo i {
+            font-size: 1.75rem;
+            color: var(--accent);
+            margin-right: 0.75rem;
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            object-fit: cover;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-info h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .user-info p {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--secondary);
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .welcome-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-card p {
+            opacity: 0.9;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: var(--secondary);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(79, 195, 247, 0.1);
+            color: var(--accent);
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .action-card h3 {
+            font-size: 1rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .action-card p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        /* Today's Appointments */
+        .appointment-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .appointment-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .appointment-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .appointment-time {
+            width: 80px;
+            text-align: center;
+            padding: 0.5rem;
+            background: rgba(79, 195, 247, 0.1);
+            color: var(--accent);
+            border-radius: 6px;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .appointment-details {
+            flex: 1;
+        }
+        
+        .appointment-details h3 {
+            font-size: 1rem;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .appointment-details p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .appointment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 10px rgba(22, 96, 136, 0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(22, 96, 136, 0.3);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+        
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .menu-item span, .user-info {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 0.75rem;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .appointment-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .appointment-time {
+                margin-right: 0;
+                margin-bottom: 1rem;
+                width: 100%;
+                text-align: left;
+            }
+            
+            .appointment-actions {
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span class="logo-text">ACADEMY MEDICAL</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name={{ username|urlencode }}&background=4a6fa5&color=fff" alt="{{ username }}">
+                    <div class="user-info">
+                        <h3>{{ username }}</h3>
+                        <p>Clinic Staff</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="{{ url_for('staff_dashboard') }}" class="menu-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('view_medical_records') }}" class="menu-item">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+                <a href="{{ url_for('view_appointments') }}" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="{{ url_for('view_vaccination_data') }}" class="menu-item">
+                    <i class="fas fa-syringe"></i>
+                    <span>Vaccinations</span>
+                </a>
+                <a href="{{ url_for('view_sent_alerts') }}" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Health Alerts</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="menu-item" id="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Clinic Staff Dashboard</h1>
+                <div style="display:flex;align-items:center;gap:1.5rem;">
+                    <div class="notification-bell" style="position:relative;cursor:pointer;">
+                        <i class="fas fa-bell fa-lg"></i>
+                        {% if unread_notifications and unread_notifications|length > 0 %}
+                            <span style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border-radius:50%;padding:2px 7px;font-size:0.8rem;">{{ unread_notifications|length }}</span>
+                        {% endif %}
+                        <div class="notification-dropdown" style="display:none;position:absolute;right:0;top:30px;min-width:320px;z-index:1001;background:white;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15);overflow:hidden;">
+                            {% if unread_notifications and unread_notifications|length > 0 %}
+                                {% for notif in unread_notifications %}
+                                    <div style="padding:1rem;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+                                        <div style="flex:1;">
+                                            <div style="font-size:1rem;color:var(--secondary);font-weight:500;">{{ notif.subject }}</div>
+                                            <div style="font-size:0.95rem;color:#444;margin-top:0.25rem;">{{ notif.message }}</div>
+                                            <div style="font-size:0.8rem;color:#888;margin-top:0.25rem;">{{ notif.sent_at.strftime('%Y-%m-%d %H:%M') if notif.sent_at else '' }}</div>
+                                        </div>
+                                        <button class="btn btn-success btn-sm mark-read-btn" data-id="{{ notif.notification_id }}">Mark as read</button>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div style="padding:1rem;text-align:center;color:var(--secondary);">No new notifications.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="date-time" id="dateTime"></div>
+                </div>
+            </div>
+            
+            <div class="welcome-card">
+                <h2>Welcome, {{ username }}!</h2>
+                <p>Manage student health records, appointments, and vaccination data.</p>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="{{ url_for('create_medical_record') }}" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-file-medical-alt"></i>
+                            </div>
+                            <h3>New Medical Record</h3>
+                            <p>Create student health documentation</p>
+                        </a>
+                        <a href="{{ url_for('view_appointments') }}" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <h3>Manage Appointments</h3>
+                            <p>View and schedule clinic visits</p>
+                        </a>
+                        <a href="{{ url_for('create_vaccination_log') }}" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-syringe"></i>
+                            </div>
+                            <h3>Log Vaccination</h3>
+                            <p>Record immunization data</p>
+                        </a>
+                        <a href="{{ url_for('send_health_alert') }}" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h3>Send Health Alert</h3>
+                            <p>Notify parents and students</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Today's Appointments -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Today's Appointments</h2>
+                    <a href="{{ url_for('view_appointments') }}" style="font-size: 0.9rem; color: var(--primary);">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="appointment-list">
+                        {% if todays_appointments and todays_appointments|length > 0 %}
+                            {% for appt in todays_appointments %}
+                            <div class="appointment-item">
+                                <div class="appointment-time">{{ appt.formatted_time }}</div>
+                                <div class="appointment-details">
+                                    <h3>{{ appt.appointment_type }} - {{ appt.first_name }} {{ appt.last_name }}</h3>
+                                    <p>{{ appt.reason }}</p>
+                                </div>
+                                <div class="appointment-actions">
+                                    <form method="post" action="{{ url_for('mark_appointment_completed', appointment_id=appt.appointment_id) }}" style="display:inline;" class="complete-form">
+                                        <button type="button" class="btn btn-success btn-sm complete-btn">
+                                            <i class="fas fa-check"></i> Complete
+                                        </button>
+                                    </form>
+                                    <a href="{{ url_for('reschedule_appointment', appointment_id=appt.appointment_id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="appointment-item">
+                                <div class="appointment-details">
+                                    <h3>No appointments scheduled for today.</h3>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Medical Records -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Medical Records</h2>
+                    <a href="{{ url_for('view_medical_records') }}" style="font-size: 0.9rem; color: var(--primary);">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="appointment-list">
+                        <div class="appointment-item">
+                            <div class="appointment-time" style="background-color: rgba(255, 193, 7, 0.1); color: var(--warning);">
+                                <i class="fas fa-allergy"></i>
+                            </div>
+                            <div class="appointment-details">
+                                <h3>Allergy Update - David Miller</h3>
+                                <p>Added peanut allergy to records</p>
+                                <p style="font-size: 0.7rem; color: #999;">Today at 9:15 AM</p>
+                            </div>
+                            <div class="appointment-actions">
+                                <a href="#" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                            </div>
+                        </div>
+                        <div class="appointment-item">
+                            <div class="appointment-time" style="background-color: rgba(220, 53, 69, 0.1); color: var(--danger);">
+                                <i class="fas fa-notes-medical"></i>
+                            </div>
+                            <div class="appointment-details">
+                                <h3>Injury Report - Jason Brown</h3>
+                                <p>Playground accident - minor concussion</p>
+                                <p style="font-size: 0.7rem; color: #999;">Yesterday at 1:45 PM</p>
+                            </div>
+                            <div class="appointment-actions">
+                                <a href="#" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('dateTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Update immediately and then every minute
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+        
+        // Add confirmation for critical actions
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.btn-danger');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Are you sure you want to delete this record?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+
+        // SweetAlert2 logout confirmation
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Confirm Logout',
+                    text: 'Are you sure you want to log out?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Logout',
+                    cancelButtonText: 'Cancel',
+                    showClass: { popup: 'animate__animated animate__fadeInDown' },
+                    hideClass: { popup: 'animate__animated animate__fadeOutUp' },
+                    customClass: { confirmButton: 'swal2-confirm swal2-styled' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = logoutLink.getAttribute('href');
+                    }
+                });
+            });
+        }
+
+        // Notification bell dropdown toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const bell = document.querySelector('.notification-bell');
+            const dropdown = bell.querySelector('.notification-dropdown');
+            bell.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+            document.body.addEventListener('click', function() {
+                dropdown.style.display = 'none';
+            });
+            // AJAX mark as read
+            dropdown.addEventListener('click', function(e) {
+                if (e.target.classList.contains('mark-read-btn')) {
+                    const notifId = e.target.getAttribute('data-id');
+                    fetch(`/mark_notification_read/${notifId}`, {method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'}})
+                        .then(resp => {
+                            if (resp.status === 204) {
+                                e.target.closest('div').remove();
+                                // Optionally update bell count
+                                const badge = bell.querySelector('span');
+                                if (badge) {
+                                    let count = parseInt(badge.textContent)-1;
+                                    if (count > 0) badge.textContent = count;
+                                    else badge.remove();
+                                }
+                                if (dropdown.querySelectorAll('.mark-read-btn').length === 0) {
+                                    dropdown.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--secondary);">No new notifications.</div>';
+                                }
+                            }
+                        });
+                }
+            });
+        });
+
+        // Confirmation dialog for Complete button
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.complete-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = btn.closest('form');
+                    Swal.fire({
+                        title: 'Mark as Completed?',
+                        text: 'Are you sure you want to mark this appointment as completed?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, Complete',
+                        cancelButtonText: 'Cancel',
+                        showClass: { popup: 'animate__animated animate__fadeInDown' },
+                        hideClass: { popup: 'animate__animated animate__fadeOutUp' },
+                        customClass: { confirmButton: 'btn btn-success', cancelButton: 'btn btn-danger' }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Appointment marked as completed!',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                showClass: { popup: 'animate__animated animate__fadeInDown' },
+                                hideClass: { popup: 'animate__animated animate__fadeOutUp' }
+                            });
+                            setTimeout(function() {
+                                form.submit();
+                            }, 1000);
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

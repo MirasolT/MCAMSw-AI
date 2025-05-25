@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Health Record</title>
+</head>
+<body>
+    <h2>Update Health Record</h2>
+    <form method="post">
+        <label for="height_cm">Height (cm):</label>
+        <input type="text" name="height_cm" value="{{ health_record.height_cm }}" required><br>
+
+        <label for="weight_kg">Weight (kg):</label>
+        <input type="text" name="weight_kg" value="{{ health_record.weight_kg }}" required><br>
+
+        <label for="blood_type">Blood Type:</label>
+        <input type="text" name="blood_type" value="{{ health_record.blood_type }}" required><br>
+
+        <label for="allergies">Allergies:</label>
+        <textarea name="allergies">{{ health_record.allergies }}</textarea><br>
+
+        <label for="medical_conditions">Medical Conditions:</label>
+        <textarea name="medical_conditions">{{ health_record.medical_conditions }}</textarea><br>
+
+        <label for="current_medications">Current Medications:</label>
+        <textarea name="current_medications">{{ health_record.current_medications }}</textarea><br>
+
+        <label for="immunization_status">Immunization Status:</label>
+        <textarea name="immunization_status">{{ health_record.immunization_status }}</textarea><br>
+
+        <label for="general_diagnosis">General Diagnosis:</label>
+        <textarea name="general_diagnosis">{{ health_record.general_diagnosis }}</textarea><br>
+
+        <label for="treatment_plan">Treatment Plan:</label>
+        <textarea name="treatment_plan">{{ health_record.treatment_plan }}</textarea><br>
+
+        <label for="doctor_notes">Doctor's Notes:</label>
+        <textarea name="doctor_notes">{{ health_record.doctor_notes }}</textarea><br>
+
+        <label for="status">Record Status:</label>
+        <select name="status" required>
+            <option value="Active" {% if health_record.status == 'Active' %} selected {% endif %}>Active</option>
+            <option value="Resolved" {% if health_record.status == 'Resolved' %} selected {% endif %}>Resolved</option>
+            <option value="Archived" {% if health_record.status == 'Archived' %} selected {% endif %}>Archived</option>
+        </select><br>
+
+        <button type="submit">Update Record</button>
+    </form>
+    <br>
+    <a href="{{ url_for('view_health_records') }}">Back to Health Records</a>
+</body>
+</html>

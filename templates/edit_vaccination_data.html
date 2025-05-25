@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Vaccination Data</title>
+</head>
+<body>
+    <h2>Edit Vaccination Log</h2>
+    <form method="post">
+        <label for="vaccine_name">Vaccine Name:</label>
+        <input type="text" name="vaccine_name" value="{{ vaccination.vaccine_name }}" required><br>
+
+        <label for="vaccine_type">Vaccine Type:</label>
+        <input type="text" name="vaccine_type" value="{{ vaccination.vaccine_type }}" required><br>
+
+        <label for="manufacturer">Manufacturer:</label>
+        <input type="text" name="manufacturer" value="{{ vaccination.manufacturer }}" required><br>
+
+        <label for="batch_number">Batch Number:</label>
+        <input type="text" name="batch_number" value="{{ vaccination.batch_number }}" required><br>
+
+        <label for="dose_number">Dose Number:</label>
+        <input type="number" name="dose_number" value="{{ vaccination.dose_number }}" required><br>
+
+        <label for="total_doses">Total Doses:</label>
+        <input type="number" name="total_doses" value="{{ vaccination.total_doses }}" required><br>
+
+        <label for="date_administered">Date Administered:</label>
+        <input type="date" name="date_administered" value="{{ vaccination.date_administered }}" required><br>
+
+        <label for="next_due_date">Next Due Date:</label>
+        <input type="date" name="next_due_date" value="{{ vaccination.next_due_date }}" required><br>
+
+        <label for="site_of_injection">Site of Injection:</label>
+        <input type="text" name="site_of_injection" value="{{ vaccination.site_of_injection }}" required><br>
+
+        <label for="side_effects">Side Effects:</label>
+        <textarea name="side_effects">{{ vaccination.side_effects }}</textarea><br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+    <br>
+    <a href="{{ url_for('view_vaccination_data') }}">Back to Vaccination Data</a>
+</body>
+</html>

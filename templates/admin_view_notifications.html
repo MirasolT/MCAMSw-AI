@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Notifications - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: #444; }
+        .container { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 2rem; }
+        h1 { color: #166088; margin-bottom: 1.5rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.75rem 1rem; border-bottom: 1px solid #eee; }
+        th { background: #f9f9f9; color: #166088; font-weight: 600; }
+        tr.unread { background: #e3f2fd; }
+        .badge { display: inline-block; padding: 0.35rem 0.5rem; border-radius: 50px; font-size: 0.75rem; font-weight: 500; }
+        .badge-success { background: rgba(40,167,69,0.1); color: #28a745; }
+        .badge-danger { background: rgba(220,53,69,0.1); color: #dc3545; }
+        .back-link { color: #4a6fa5; text-decoration: none; font-weight: 500; margin-bottom: 1rem; display: inline-block; }
+        .back-link:hover { text-decoration: underline; }
+        .btn-view { background: #4a6fa5; color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.8rem; cursor: pointer; font-size: 0.9rem; }
+        .btn-view:hover { background: #166088; }
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background: rgba(0,0,0,0.3); }
+        .modal-content { background: #fff; margin: 5% auto; padding: 2rem; border-radius: 10px; max-width: 500px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .close { position: absolute; right: 1.2rem; top: 1.2rem; font-size: 1.5rem; color: #888; cursor: pointer; }
+        .modal-footer { margin-top: 1.5rem; text-align: right; }
+        .btn-mark-read { background: #28a745; color: #fff; border: none; border-radius: 4px; padding: 0.4rem 1.2rem; font-size: 1rem; cursor: pointer; }
+        .btn-mark-read:disabled { background: #aaa; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('admin_dashboard') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <h1>Notifications</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in notifications %}
+                <tr class="{% if not n.is_read %}unread{% endif %}" data-id="{{ n.notification_id }}" data-date="{{ n.sent_at.strftime('%Y-%m-%d %H:%M') if n.sent_at else '' }}" data-subject="{{ n.subject }}" data-message="{{ n.message }}" data-status="{{ 'Read' if n.is_read else 'Unread' }}" data-is-read="{{ n.is_read }}">
+                    <td>{{ n.sent_at.strftime('%Y-%m-%d %H:%M') if n.sent_at else '' }}</td>
+                    <td>{{ n.subject }}</td>
+                    <td>{{ n.message[:40] }}{% if n.message|length > 40 %}...{% endif %}</td>
+                    <td>
+                        {% if n.is_read %}
+                            <span class="badge badge-success">Read</span>
+                        {% else %}
+                            <span class="badge badge-danger">Unread</span>
+                        {% endif %}
+                    </td>
+                    <td><button class="btn-view">View</button></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" style="text-align:center; color:#888;">No notifications found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- Modal -->
+    <div id="notifModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalSubject"></h2>
+            <p id="modalDate" style="color:#888; font-size:0.95rem;"></p>
+            <div id="modalMessage" style="margin:1.2rem 0;"></div>
+            <div class="modal-footer">
+                <button id="markReadBtn" class="btn-mark-read">Mark as Read</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Modal logic
+    const modal = document.getElementById('notifModal');
+    const closeBtn = document.querySelector('.close');
+    const markReadBtn = document.getElementById('markReadBtn');
+    let currentNotifId = null;
+    document.querySelectorAll('.btn-view').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            currentNotifId = row.getAttribute('data-id');
+            document.getElementById('modalSubject').innerText = row.getAttribute('data-subject');
+            document.getElementById('modalDate').innerText = row.getAttribute('data-date');
+            document.getElementById('modalMessage').innerText = row.getAttribute('data-message');
+            // Disable Mark as Read if already read
+            if (row.getAttribute('data-is-read') === 'True' || row.getAttribute('data-is-read') === 'true') {
+                markReadBtn.disabled = true;
+                markReadBtn.innerText = 'Already Read';
+            } else {
+                markReadBtn.disabled = false;
+                markReadBtn.innerText = 'Mark as Read';
+            }
+            modal.style.display = 'block';
+        });
+    });
+    closeBtn.onclick = function() { modal.style.display = 'none'; };
+    window.onclick = function(event) { if (event.target == modal) modal.style.display = 'none'; };
+    // Mark as Read AJAX
+    markReadBtn.onclick = function() {
+        if (!currentNotifId) return;
+        fetch(`/mark_notification_read/${currentNotifId}`, { method: 'POST' })
+            .then(resp => {
+                if (resp.status === 204) {
+                    // Update row in table
+                    const row = document.querySelector(`tr[data-id='${currentNotifId}']`);
+                    if (row) {
+                        row.classList.remove('unread');
+                        row.querySelector('.badge-danger').classList.remove('badge-danger');
+                        row.querySelector('.badge-success')?.classList.add('badge-success');
+                        row.querySelector('td:nth-child(4)').innerHTML = '<span class="badge badge-success">Read</span>';
+                        row.setAttribute('data-is-read', 'True');
+                    }
+                    markReadBtn.disabled = true;
+                    markReadBtn.innerText = 'Already Read';
+                }
+            });
+    };
+    </script>
+</body>
+</html> 

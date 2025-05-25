@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Settings - School Clinic System</title>
+</head>
+<body>
+    <h1>Admin Settings</h1>
+
+    <form method="POST">
+        <label for="system_name">System Name:</label><br>
+        <input type="text" name="system_name" id="system_name" value="School Clinic System"><br><br>
+
+        <label for="timezone">Timezone:</label><br>
+        <select name="timezone" id="timezone">
+            <option value="UTC">UTC</option>
+            <option value="Asia/Manila">Asia/Manila</option>
+            <option value="America/New_York">America/New_York</option>
+        </select><br><br>
+
+        <button type="submit">Save Settings</button>
+    </form>
+
+    <p><a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a></p>
+</body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --text: #444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            position: fixed;
+            height: 100%;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo i {
+            font-size: 1.75rem;
+            color: var(--accent);
+            margin-right: 0.75rem;
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--secondary);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            object-fit: cover;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: var(--secondary);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 10px rgba(22, 96, 136, 0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(22, 96, 136, 0.3);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+        
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th, .table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .table th {
+            background-color: #f9f9f9;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .table tr:hover {
+            background-color: #f5f9ff;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+        
+        .badge-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+        
+        /* Search Box */
+        .search-box {
+            position: relative;
+            max-width: 300px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+            outline: none;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        /* Admin Actions */
+        .admin-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .menu-item span {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 0.75rem;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-box {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .admin-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span class="logo-text">ACADEMY MEDICAL</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="{{ url_for('admin_dashboard') }}" class="menu-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('create_user') }}" class="menu-item">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Create User</span>
+                </a>
+                <a href="{{ url_for('manage_encryption') }}" class="menu-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Encryption</span>
+                </a>
+                <a href="{{ url_for('view_system_logs') }}" class="menu-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>System Logs</span>
+                </a>
+                <a href="{{ url_for('generate_health_report') }}" class="menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Health Reports</span>
+                </a>
+                <a href="{{ url_for('settings') }}" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Admin Dashboard</h1>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=4a6fa5&color=fff" alt="Admin">
+                    <div>
+                        <div style="font-weight: 500; display: flex; align-items: center; gap: 1rem;">
+                            Admin
+                            <!-- Notifications bell -->
+                            <a href="{{ url_for('admin_view_notifications') }}" style="color: var(--primary); position: relative;">
+                                <i class="fas fa-bell"></i>
+                                <!-- Optionally, show unread count -->
+                                {# <span class="badge badge-danger" style="position:absolute;top:-8px;right:-8px;">3</span> #}
+                            </a>
+                        </div>
+                        <a href="{{ url_for('logout') }}" style="font-size: 0.8rem; color: var(--danger);">Logout</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="card">
+                    <div class="card-body" style="text-align: center;">
+                        <h3 style="font-size: 1.5rem; color: var(--primary);">{{ users|length }}</h3>
+                        <p style="color: #666; font-size: 0.9rem;">Total Users</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body" style="text-align: center;">
+                        <h3 style="font-size: 1.5rem; color: var(--success);">{{ users|selectattr('role', 'equalto', 'student')|list|length }}</h3>
+                        <p style="color: #666; font-size: 0.9rem;">Students</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body" style="text-align: center;">
+                        <h3 style="font-size: 1.5rem; color: var(--secondary);">{{ users|selectattr('role', 'equalto', 'parent')|list|length }}</h3>
+                        <p style="color: #666; font-size: 0.9rem;">Parents</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body" style="text-align: center;">
+                        <h3 style="font-size: 1.5rem; color: var(--accent);">{{ users|selectattr('role', 'equalto', 'staff')|list|length }}</h3>
+                        <p style="color: #666; font-size: 0.9rem;">Staff</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Age Distribution Line Chart -->
+            <div class="card fade-in" style="margin-bottom: 1.5rem; max-width: 900px; height: 400px;">
+                <div class="card-header">
+                    <h2>User Age Distribution</h2>
+                </div>
+                <div class="card-body" style="height: 320px;">
+                    <canvas id="ageLineChart" height="120" style="max-height: 320px;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Admin Actions -->
+            <div class="admin-actions">
+                <a href="{{ url_for('create_user') }}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Create New User
+                </a>
+                <a href="{{ url_for('manage_encryption') }}" class="btn btn-warning">
+                    <i class="fas fa-lock"></i> Manage Encryption
+                </a>
+                <a href="{{ url_for('view_system_logs') }}" class="btn">
+                    <i class="fas fa-clipboard-list"></i> View System Logs
+                </a>
+                <a href="{{ url_for('generate_health_report') }}" class="btn btn-success">
+                    <i class="fas fa-chart-bar"></i> Generate Health Report
+                </a>
+            </div>
+            
+            <!-- User Management -->
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h2>User Management</h2>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search" placeholder="Search users...">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" id="userTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Age</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.user_id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.role|capitalize }}</td>
+                                    <td>
+                                        <span class="badge badge-warning" style="font-size:0.95rem;"><i class="fas fa-user" style="margin-right:4px;"></i>{{ user.age }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if user.is_active %}badge-success{% else %}badge-danger{% endif %}">
+                                            {{ 'Active' if user.is_active else 'Inactive' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <a href="{{ url_for('update_user', user_id=user.user_id) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{{ url_for('deactivate_user', user_id=user.user_id) }}" class="btn {% if user.is_active %}btn-danger{% else %}btn-success{% endif %} btn-sm">
+                                                <i class="fas {% if user.is_active %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            document.getElementById("search").addEventListener("keyup", function() {
+                const searchValue = this.value.toLowerCase();
+                const table = document.getElementById("userTable");
+                const rows = table.getElementsByTagName("tr");
+
+                for (let i = 1; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName("td");
+                    let match = false;
+
+                    for (let j = 0; j < cells.length - 1; j++) { // Skip actions column
+                        if (cells[j].innerText.toLowerCase().includes(searchValue)) {
+                            match = true;
+                            break;
+                        }
+                    }
+
+                    rows[i].style.display = match ? "" : "none";
+                }
+            });
+
+            // Confirmation for deactivation
+            const deactivateButtons = document.querySelectorAll('.btn-danger');
+            deactivateButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Are you sure you want to change this user\'s status?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Age Line Chart
+            const ctx = document.getElementById('ageLineChart').getContext('2d');
+            let ageChart;
+            function createOrUpdateChart(labels, data) {
+                if (ageChart) {
+                    ageChart.data.labels = labels;
+                    ageChart.data.datasets[0].data = data;
+                    ageChart.update();
+                } else {
+                    ageChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'User Age',
+                                data: data,
+                                borderColor: '#4a6fa5',
+                                backgroundColor: 'rgba(79,195,247,0.25)',
+                                fill: true,
+                                tension: 0.5, // More wave-like
+                                pointRadius: 4,
+                                pointBackgroundColor: '#166088',
+                                pointBorderColor: '#fff',
+                                pointHoverRadius: 7,
+                                cubicInterpolationMode: 'monotone',
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                title: { display: false }
+                            },
+                            animation: {
+                                duration: 2000,
+                                easing: 'easeInOutSine',
+                            },
+                            elements: {
+                                line: {
+                                    borderWidth: 4,
+                                },
+                                point: {
+                                    radius: 4,
+                                    hoverRadius: 7
+                                }
+                            },
+                            scales: {
+                                x: { title: { display: true, text: 'User' } },
+                                y: { title: { display: true, text: 'Age' }, beginAtZero: true }
+                            }
+                        }
+                    });
+                }
+            }
+
+            async function fetchAndUpdateChart() {
+                try {
+                    const resp = await fetch('/api/user-ages');
+                    const users = await resp.json();
+                    const labels = users.map(u => u.username);
+                    const data = users.map(u => u.age);
+                    createOrUpdateChart(labels, data);
+                } catch (e) {
+                    // Optionally handle error
+                }
+            }
+            fetchAndUpdateChart();
+            setInterval(fetchAndUpdateChart, 3000);
+        });
+    </script>
+</body>
+</html>

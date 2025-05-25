@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --text: #444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            position: fixed;
+            height: 100%;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo i {
+            font-size: 1.75rem;
+            color: var(--accent);
+            margin-right: 0.75rem;
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            object-fit: cover;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-info h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .user-info p {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--secondary);
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .welcome-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-card p {
+            opacity: 0.9;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: var(--secondary);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Quick Links */
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .quick-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+        
+        .quick-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quick-link i {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(79, 195, 247, 0.1);
+            color: var(--accent);
+            border-radius: 50%;
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+        
+        .quick-link-text h3 {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .quick-link-text p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        /* Upcoming Appointments */
+        .appointment-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+        
+        .appointment-card:last-child {
+            border-bottom: none;
+        }
+        
+        .appointment-card:hover {
+            background-color: #f5f9ff;
+        }
+        
+        .appointment-date {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(79, 195, 247, 0.1);
+            color: var(--accent);
+            border-radius: 8px;
+            margin-right: 1rem;
+            font-weight: 600;
+        }
+        
+        .appointment-date .day {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        .appointment-date .month {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+        
+        .appointment-info h3 {
+            font-size: 1rem;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .appointment-info p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .menu-item span, .user-info {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 0.75rem;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Notification Bell Dropdown Styles */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+        .notification-bell .fa-bell {
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .notification-bell:hover .fa-bell {
+            color: var(--primary);
+        }
+        .notification-bell .notif-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(220,53,69,0.15);
+            border: 2px solid #fff;
+        }
+        .notification-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 30px;
+            min-width: 340px;
+            z-index: 1001;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            overflow: hidden;
+            border-top: 4px solid var(--primary);
+            font-family: 'Poppins', sans-serif;
+            animation: fadeInNotif 0.35s cubic-bezier(.4,2,.6,1);
+        }
+        @keyframes fadeInNotif {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .notif-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.1rem 1.2rem;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fff;
+            transition: background 0.18s;
+            cursor: pointer;
+        }
+        .notif-card:last-child {
+            border-bottom: none;
+        }
+        .notif-card:hover {
+            background: #f8f9fa;
+        }
+        .notif-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-top: 2px;
+        }
+        .notif-icon-appointment { background: #e3f2fd; color: var(--primary); }
+        .notif-icon-vaccination { background: #e8f5e9; color: var(--success); }
+        .notif-icon-health { background: #fff3cd; color: var(--warning); }
+        .notif-icon-default { background: #f0f0f0; color: #888; }
+        .notif-content {
+            flex: 1;
+        }
+        .notif-subject {
+            font-size: 1.05rem;
+            color: var(--secondary);
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+        }
+        .notif-message {
+            font-size: 0.97rem;
+            color: #444;
+            margin-bottom: 0.2rem;
+        }
+        .notif-time {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .notif-card .btn {
+            margin-left: 0.5rem;
+            font-size: 0.85rem;
+            padding: 0.35rem 0.8rem;
+        }
+        .notification-dropdown .no-notif {
+            padding: 1.2rem;
+            text-align: center;
+            color: var(--secondary);
+            font-size: 1rem;
+        }
+        /* End Notification Bell Dropdown Styles */
+        /* Parent AI Chat Bot Widget Styles */
+        .ai-chatbot-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 2000;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 4px 16px rgba(74,111,165,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: box-shadow 0.2s, background 0.2s;
+        }
+        .ai-chatbot-btn:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            box-shadow: 0 8px 24px rgba(74,111,165,0.25);
+        }
+        .ai-chatbot-window {
+            position: fixed;
+            bottom: 110px;
+            right: 32px;
+            width: 350px;
+            max-width: 95vw;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(74,111,165,0.18);
+            z-index: 2100;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .ai-chatbot-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .ai-chatbot-header span {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .ai-chatbot-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .ai-chatbot-body {
+            padding: 1rem;
+            height: 260px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            font-size: 0.97rem;
+        }
+        .ai-chatbot-message {
+            margin-bottom: 0.7rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .ai-chatbot-message.user {
+            align-items: flex-end;
+        }
+        .ai-chatbot-message.ai {
+            align-items: flex-start;
+        }
+        .ai-chatbot-bubble {
+            padding: 0.7em 1em;
+            border-radius: 16px;
+            max-width: 80%;
+            word-break: break-word;
+        }
+        .ai-chatbot-message.user .ai-chatbot-bubble {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+        .ai-chatbot-message.ai .ai-chatbot-bubble {
+            background: #e3f2fd;
+            color: var(--secondary);
+            border-bottom-left-radius: 4px;
+        }
+        .ai-chatbot-footer {
+            padding: 0.7rem 1rem;
+            background: #f5f7fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .ai-chatbot-input {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 0.5em 0.9em;
+            font-size: 1rem;
+            outline: none;
+        }
+        .ai-chatbot-send {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5em 1em;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .ai-chatbot-send:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+        }
+        @media (max-width: 600px) {
+            .ai-chatbot-window {
+                width: 98vw;
+                right: 1vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span class="logo-text">ACADEMY MEDICAL</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name={{ username|urlencode }}&background=4a6fa5&color=fff" alt="{{ username }}">
+                    <div class="user-info">
+                        <h3>{{ username }}</h3>
+                        <p>Age: {{ age }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="{{ url_for('student_dashboard') }}" class="menu-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('view_profile') }}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="{{ url_for('view_health_records') }}" class="menu-item">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Health Records</span>
+                </a>
+                <a href="{{ url_for('student_view_vaccinations') }}" class="menu-item">
+                    <i class="fas fa-syringe"></i>
+                    <span>My Vaccinations</span>
+                </a>
+                <a href="{{ url_for('student_view_appointments') }}" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="{{ url_for('student_view_notifications') }}" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="menu-item" id="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Student Dashboard</h1>
+                <div style="display:flex;align-items:center;gap:1.5rem;">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell fa-lg"></i>
+                        {% set unread_count = notifications|selectattr('is_read', 'equalto', False)|list|length %}
+                        {% if unread_count > 0 %}
+                            <span class="notif-badge">{{ unread_count }}</span>
+                        {% endif %}
+                        <div class="notification-dropdown animate__animated" style="display:none;">
+                            {% set unread_notifications = notifications|selectattr('is_read', 'equalto', False)|list %}
+                            {% if unread_notifications and unread_notifications|length > 0 %}
+                                <div style="text-align:right; margin-bottom:0.5rem;">
+                                    <a href="#" id="mark-all-read" style="color:var(--primary);font-size:0.97rem;cursor:pointer;">Mark All as Read</a>
+                                </div>
+                                {% for notif in unread_notifications %}
+                                    {% set icon_class = 'notif-icon-default' %}
+                                    {% set icon = 'fa-info-circle' %}
+                                    {% if notif.message_type == 'Alert' or notif.message_type == 'Appointment' %}
+                                        {% set icon_class = 'notif-icon-appointment' %}
+                                        {% set icon = 'fa-calendar-check' %}
+                                    {% elif notif.message_type == 'Vaccination' %}
+                                        {% set icon_class = 'notif-icon-vaccination' %}
+                                        {% set icon = 'fa-syringe' %}
+                                    {% elif notif.message_type == 'HealthRecord' %}
+                                        {% set icon_class = 'notif-icon-health' %}
+                                        {% set icon = 'fa-file-medical' %}
+                                    {% endif %}
+                                    <div class="notif-card">
+                                        <div class="notif-icon {{ icon_class }}">
+                                            <i class="fas {{ icon }}"></i>
+                                        </div>
+                                        <div class="notif-content">
+                                            <div class="notif-subject">{{ notif.subject }}</div>
+                                            <div class="notif-message">{{ notif.message }}</div>
+                                            <div class="notif-time">{{ notif.sent_at.strftime('%Y-%m-%d %H:%M') if notif.sent_at else '' }}</div>
+                                        </div>
+                                        <button class="btn btn-success btn-sm mark-read-btn" data-id="{{ notif.notification_id }}">Mark as read</button>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="no-notif">No notifications.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="date-time" id="dateTime"></div>
+                </div>
+            </div>
+            
+            <div class="welcome-card">
+                <h2>Welcome back, {{ username }}!</h2>
+                <p>Access your health information, schedule appointments, and view your medical records.</p>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Quick Access</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-links">
+                        <a href="{{ url_for('view_profile') }}" class="quick-link">
+                            <i class="fas fa-user-edit"></i>
+                            <div class="quick-link-text">
+                                <h3>Update Profile</h3>
+                                <p>Edit your personal information</p>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('view_health_records') }}" class="quick-link">
+                            <i class="fas fa-file-medical-alt"></i>
+                            <div class="quick-link-text">
+                                <h3>Health Records</h3>
+                                <p>View your medical history</p>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('schedule_appointment') }}" class="quick-link">
+                            <i class="fas fa-calendar-plus"></i>
+                            <div class="quick-link-text">
+                                <h3>New Appointment</h3>
+                                <p>Schedule with clinic staff</p>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('student_view_notifications') }}" class="quick-link">
+                            <i class="fas fa-bell"></i>
+                            <div class="quick-link-text">
+                                <h3>Notifications</h3>
+                                <p>View your messages</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upcoming Appointments -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Upcoming Appointments</h2>
+                    <a href="{{ url_for('student_view_appointments') }}" style="font-size: 0.9rem; color: var(--primary);">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_appointments and upcoming_appointments|length > 0 %}
+                        {% for appt in upcoming_appointments %}
+                        <div class="appointment-card" style="cursor:pointer;" onclick="showAppointmentModal('{{ appt.appointment_date }}', '{{ appt.appointment_time }}', '{{ appt.appointment_type|escape }}', '{{ appt.reason|escape }}', '{{ appt.status|escape }}')">
+                            <div class="appointment-date">
+                                <span class="day">{{ appt.appointment_date[8:10] }}</span>
+                                <span class="month">{{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][appt.appointment_date[5:7]|int - 1] }}</span>
+                            </div>
+                            <div class="appointment-info">
+                                <h3>{{ appt.appointment_type }}</h3>
+                                <p>{{ appt.appointment_time }} | {{ appt.reason }}</p>
+                                <p>Status: <span style="color: var(--success); font-weight:600;">{{ appt.status }}</span></p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="appointment-card">
+                            <div class="appointment-info">
+                                <h3>No upcoming appointments</h3>
+                                <p>Book a new appointment to see it here.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Health Reminders Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Health Reminders</h2>
+                    <a href="{{ url_for('student_view_reminders') }}" style="font-size: 0.9rem; color: var(--primary); cursor:pointer;">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if health_reminders and health_reminders|length > 0 %}
+                        {% for reminder in health_reminders %}
+                        <div class="appointment-card" style="align-items:flex-start;">
+                            <i class="fas fa-bell" style="color: var(--accent); font-size: 1.5rem; margin-right: 1rem; margin-top:0.2rem;"></i>
+                            <div class="appointment-info" style="flex:1;">
+                                <h3>{{ reminder.subject }}</h3>
+                                <p>{{ reminder.message }}</p>
+                                <p style="font-size:0.85rem;color:#888;">{{ reminder.sent_at.strftime('%b %d, %Y %I:%M %p') if reminder.sent_at else '' }}</p>
+                            </div>
+                            {% if not reminder.is_read %}
+                            <button class="btn btn-success btn-sm mark-reminder-read" data-id="{{ reminder.notification_id }}">Mark as Read</button>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="appointment-card">
+                            <div class="appointment-info">
+                                <h3>No health reminders</h3>
+                                <p>Reminders will appear here when available.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Recent Health Records Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Health Records</h2>
+                    <a href="{{ url_for('view_health_records') }}" style="font-size: 0.9rem; color: var(--primary); cursor:pointer;">View All Health Records</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_health_records and recent_health_records|length > 0 %}
+                        {% for rec in recent_health_records %}
+                        <div class="appointment-card">
+                            <i class="fas fa-file-medical" style="color: var(--secondary); font-size: 1.5rem; margin-right: 1rem;"></i>
+                            <div class="appointment-info">
+                                <h3>Visit Date: {{ rec.visit_date }}</h3>
+                                <p>Next Follow-up: {{ rec.next_follow_up or 'N/A' }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="appointment-card">
+                            <div class="appointment-info">
+                                <h3>No health records</h3>
+                                <p>Your recent health records will appear here.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('dateTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Update immediately and then every minute
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+        
+        // Responsive sidebar toggle (for mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can add mobile menu toggle functionality here if needed
+        });
+    </script>
+    <!-- SweetAlert2 for restriction message -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'danger' %}
+                    <input type="hidden" id="danger_message" value="Appointment scheduling is only available for students aged 16 and above. Please contact the clinic or your parent/guardian for assistance.">
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var dangerInput = document.getElementById('danger_message');
+            if (dangerInput && dangerInput.value) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Age Restriction',
+                    text: dangerInput.value,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'swal2-confirm swal2-styled'
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+    function showAppointmentModal(date, time, type, reason, status) {
+        Swal.fire({
+            title: 'Appointment Details',
+            html: `<div style='text-align:left;'>
+                <b>Date:</b> ${date}<br>
+                <b>Time:</b> ${time}<br>
+                <b>Type:</b> ${type}<br>
+                <b>Reason:</b> ${reason}<br>
+                <b>Status:</b> <span style='color: var(--success); font-weight:600;'>${status}</span>
+            </div>`,
+            icon: 'info',
+            confirmButtonText: 'Close',
+            showClass: { popup: 'animate__animated animate__fadeInDown' },
+            hideClass: { popup: 'animate__animated animate__fadeOutUp' },
+            customClass: { confirmButton: 'swal2-confirm swal2-styled' }
+        });
+    }
+    </script>
+    <script>
+    // SweetAlert2 logout confirmation
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Confirm Logout',
+                text: 'Are you sure you want to log out?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Logout',
+                cancelButtonText: 'Cancel',
+                showClass: { popup: 'animate__animated animate__fadeInDown' },
+                hideClass: { popup: 'animate__animated animate__fadeOutUp' },
+                customClass: { confirmButton: 'swal2-confirm swal2-styled' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = logoutLink.getAttribute('href');
+                }
+            });
+        });
+    }
+    </script>
+    <script>
+    // Notification bell dropdown toggle and Mark as Read logic
+    // -------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', function() {
+        const bell = document.querySelector('.notification-bell');
+        if (!bell) return;
+        const dropdown = bell.querySelector('.notification-dropdown');
+        // Dropdown open/close with animation
+        bell.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (dropdown.style.display === 'block') {
+                dropdown.classList.remove('animate__fadeInDown');
+                dropdown.classList.add('animate__fadeOutUp');
+                setTimeout(() => { dropdown.style.display = 'none'; }, 300);
+            } else {
+                dropdown.style.display = 'block';
+                dropdown.classList.remove('animate__fadeOutUp');
+                dropdown.classList.add('animate__animated', 'animate__fadeInDown');
+            }
+        });
+        document.body.addEventListener('click', function() {
+            if (dropdown.style.display === 'block') {
+                dropdown.classList.remove('animate__fadeInDown');
+                dropdown.classList.add('animate__fadeOutUp');
+                setTimeout(() => { dropdown.style.display = 'none'; }, 300);
+            }
+        });
+        // Hover effect for notification cards
+        dropdown.addEventListener('mouseover', function(e) {
+            if (e.target.closest('.notif-card')) {
+                e.target.closest('.notif-card').style.background = '#f8f9fa';
+            }
+        });
+        dropdown.addEventListener('mouseout', function(e) {
+            if (e.target.closest('.notif-card')) {
+                e.target.closest('.notif-card').style.background = '';
+            }
+        });
+        // Show SweetAlert2 modal on notif-card click (not mark-read-btn)
+        dropdown.addEventListener('click', function(e) {
+            const notifCard = e.target.closest('.notif-card');
+            if (notifCard && !e.target.classList.contains('mark-read-btn')) {
+                const subject = notifCard.querySelector('.notif-subject').textContent;
+                let message = notifCard.querySelector('.notif-message').textContent;
+                const time = notifCard.querySelector('.notif-time').textContent;
+                const notifId = notifCard.querySelector('.mark-read-btn').getAttribute('data-id');
+                let sentence;
+                let byName = '';
+                // Extract 'by [name]' from message (after status or at end)
+                let byMatch = message.match(/by ([^ ]+(?: [^ ]+)+)/i);
+                if (byMatch) {
+                    byName = byMatch[1];
+                    message = message.replace(/ by [^ ]+(?: [^ ]+)+/i, ''); // Remove 'by [name]' from message
+                } else {
+                    byName = '{{ username }}';
+                }
+                if (subject.toLowerCase().includes('appointment')) {
+                    // Extract status from message
+                    let statusMatch = message.match(/ - Status: (\w+)/);
+                    let status = statusMatch ? statusMatch[1] : '';
+                    if (status) message = message.replace(/ - Status: \w+/, '');
+                    if (status.toLowerCase() === 'pending') {
+                        sentence = `Your new appointment: ${message} is <b>${status}</b> by <b>${byName}</b>.<br><span style='color:#888;'>Received on ${time}</span>`;
+                    } else if (status) {
+                        sentence = `Your appointment: ${message} is <b>${status}</b> by <b>${byName}</b>.<br><span style='color:#888;'>Received on ${time}</span>`;
+                    } else {
+                        sentence = `Your appointment: ${message}.<br><span style='color:#888;'>Received on ${time}</span>`;
+                    }
+                } else {
+                    sentence = `You have a new <b>${subject.toLowerCase()}</b>: ${message}.<br><span style='color:#888;'>Received on ${time}</span>`;
+                }
+                Swal.fire({
+                    title: 'Notification',
+                    html: sentence,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Mark as read',
+                    cancelButtonText: 'Close',
+                    showClass: { popup: 'animate__animated animate__fadeInDown' },
+                    hideClass: { popup: 'animate__animated animate__fadeOutUp' },
+                    customClass: { confirmButton: 'btn btn-success', cancelButton: 'btn btn-danger' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Marked as read!',
+                            showConfirmButton: false,
+                            timer: 900,
+                            showClass: { popup: 'animate__animated animate__fadeInDown' },
+                            hideClass: { popup: 'animate__animated animate__fadeOutUp' }
+                        });
+                        setTimeout(function() {
+                            fetch(`/mark_notification_read/${notifId}`, {method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'}})
+                                .then(resp => {
+                                    if (resp.status === 204) {
+                                        notifCard.remove();
+                                        // Update badge count
+                                        const badge = bell.querySelector('span');
+                                        if (badge) {
+                                            let count = parseInt(badge.textContent)-1;
+                                            if (count > 0) badge.textContent = count;
+                                            else badge.remove();
+                                        }
+                                        if (dropdown.querySelectorAll('.mark-read-btn').length === 0 && dropdown.querySelectorAll('button').length === 0) {
+                                            dropdown.innerHTML = '<div class="no-notif">No notifications.</div>';
+                                        }
+                                    }
+                                });
+                        }, 900);
+                    }
+                });
+                e.stopPropagation();
+                return;
+            }
+            // Mark as Read with SweetAlert2 confirmation and AJAX (fallback for button)
+            if (e.target.classList.contains('mark-read-btn')) {
+                const notifId = e.target.getAttribute('data-id');
+                Swal.fire({
+                    title: 'Mark as Read?',
+                    text: 'Are you sure you want to mark this notification as read?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Mark as Read',
+                    cancelButtonText: 'Cancel',
+                    showClass: { popup: 'animate__animated animate__fadeInDown' },
+                    hideClass: { popup: 'animate__animated animate__fadeOutUp' },
+                    customClass: { confirmButton: 'btn btn-success', cancelButton: 'btn btn-danger' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Marked as read!',
+                            showConfirmButton: false,
+                            timer: 900,
+                            showClass: { popup: 'animate__animated animate__fadeInDown' },
+                            hideClass: { popup: 'animate__animated animate__fadeOutUp' }
+                        });
+                        setTimeout(function() {
+                            fetch(`/mark_notification_read/${notifId}`, {method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'}})
+                                .then(resp => {
+                                    if (resp.status === 204) {
+                                        e.target.closest('.notif-card').remove();
+                                        // Update badge count
+                                        const badge = bell.querySelector('span');
+                                        if (badge) {
+                                            let count = parseInt(badge.textContent)-1;
+                                            if (count > 0) badge.textContent = count;
+                                            else badge.remove();
+                                        }
+                                        if (dropdown.querySelectorAll('.mark-read-btn').length === 0 && dropdown.querySelectorAll('button').length === 0) {
+                                            dropdown.innerHTML = '<div class="no-notif">No notifications.</div>';
+                                        }
+                                    }
+                                });
+                        }, 900);
+                    }
+                });
+            }
+        });
+    });
+    // -------------------------------------------------------
+    </script>
+    <script>
+    // AJAX Mark as Read for Health Reminders
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.mark-reminder-read').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const notifId = this.getAttribute('data-id');
+                fetch(`/mark_notification_read/${notifId}`, {method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'}})
+                    .then(resp => {
+                        if (resp.status === 204) {
+                            this.closest('.appointment-card').remove();
+                        }
+                    });
+            });
+        });
+    });
+    </script>
+    <!-- Remove old AI Chat Bot modal/button -->
+    <div id="ai-robot-btn" style="display:none;"></div>
+    <!-- Student AI Chat Bot Widget -->
+    <button class="ai-chatbot-btn" id="aiChatbotBtn" title="Ask the Clinic AI">
+        <i class="fas fa-robot"></i>
+    </button>
+    <div class="ai-chatbot-window" id="aiChatbotWindow">
+        <div class="ai-chatbot-header">
+            <span>Clinic AI Chat</span>
+            <button class="ai-chatbot-close" id="aiChatbotClose" title="Close">&times;</button>
+        </div>
+        <div class="ai-chatbot-body" id="aiChatbotBody">
+            <div class="ai-chatbot-message ai">
+                <div class="ai-chatbot-bubble">Hi! I am your Clinic AI Assistant. How can I help you with your health or the clinic system?</div>
+            </div>
+        </div>
+        <form class="ai-chatbot-footer" id="aiChatbotForm" autocomplete="off">
+            <input type="text" class="ai-chatbot-input" id="aiChatbotInput" placeholder="Type your message..." required />
+            <button type="submit" class="ai-chatbot-send"><i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
+    <script>
+        const aiBtn = document.getElementById('aiChatbotBtn');
+        const aiWindow = document.getElementById('aiChatbotWindow');
+        const aiClose = document.getElementById('aiChatbotClose');
+        const aiForm = document.getElementById('aiChatbotForm');
+        const aiInput = document.getElementById('aiChatbotInput');
+        const aiBody = document.getElementById('aiChatbotBody');
+        aiBtn.onclick = () => aiWindow.style.display = 'flex';
+        aiClose.onclick = () => aiWindow.style.display = 'none';
+        aiForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const msg = aiInput.value.trim();
+            if (!msg) return;
+            // Show user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'ai-chatbot-message user';
+            userMsg.innerHTML = `<div class='ai-chatbot-bubble'>${msg}</div>`;
+            aiBody.appendChild(userMsg);
+            aiBody.scrollTop = aiBody.scrollHeight;
+            aiInput.value = '';
+            // Show loading
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'ai-chatbot-message ai';
+            aiMsg.innerHTML = `<div class='ai-chatbot-bubble'><i class='fas fa-spinner fa-spin'></i> Thinking...</div>`;
+            aiBody.appendChild(aiMsg);
+            aiBody.scrollTop = aiBody.scrollHeight;
+            try {
+                const res = await fetch('/student_ai_chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+                const data = await res.json();
+                aiMsg.innerHTML = `<div class='ai-chatbot-bubble'>${data.response}</div>`;
+            } catch (err) {
+                aiMsg.innerHTML = `<div class='ai-chatbot-bubble'>Sorry, I could not process your request right now.</div>`;
+            }
+            aiBody.scrollTop = aiBody.scrollHeight;
+        };
+    </script>
+    <script>
+    // Mark All as Read functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const markAllBtn = document.getElementById('mark-all-read');
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                fetch('/mark_all_notifications_read', {method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'}})
+                    .then(resp => {
+                        if (resp.status === 204) {
+                            // Remove all notif-cards and badge
+                            document.querySelectorAll('.notif-card').forEach(card => card.remove());
+                            const badge = document.querySelector('.notification-bell .notif-badge');
+                            if (badge) badge.remove();
+                            const dropdown = document.querySelector('.notification-dropdown');
+                            if (dropdown) dropdown.innerHTML = '<div class="no-notif">No notifications.</div>';
+                        }
+                    });
+            });
+        }
+    });
+    </script>
+</body>
+</html>

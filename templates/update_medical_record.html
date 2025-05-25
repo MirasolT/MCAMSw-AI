@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Medical Record - ACADEMY MEDICAL CLINIC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --text: #444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; color: var(--text); line-height: 1.6; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 1.5rem 0; position: fixed; height: 100%; transition: all 0.3s ease; z-index: 1000; }
+        .sidebar-header { padding: 0 1.5rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .logo { display: flex; align-items: center; margin-bottom: 1rem; }
+        .logo i { font-size: 1.75rem; color: var(--accent); margin-right: 0.75rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 600; }
+        .sidebar-menu { padding: 1.5rem 0; }
+        .menu-item { padding: 0.75rem 1.5rem; display: flex; align-items: center; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.3s ease; }
+        .menu-item:hover, .menu-item.active { background: rgba(255, 255, 255, 0.1); color: white; }
+        .menu-item i { margin-right: 0.75rem; font-size: 1.1rem; width: 20px; text-align: center; }
+        .main-content { flex: 1; margin-left: 250px; padding: 1.5rem; transition: all 0.3s ease; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; margin-bottom: 1.5rem; }
+        .header h1 { font-size: 1.75rem; color: var(--secondary); }
+        .card { background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); margin-bottom: 1.5rem; overflow: hidden; }
+        .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .card-header h2 { font-size: 1.25rem; color: var(--secondary); }
+        .card-body { padding: 1.5rem; }
+        form { max-width: 700px; margin: 0 auto; }
+        form label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--secondary); }
+        form input, form select, form textarea { width: 100%; padding: 0.5rem 1rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; margin-bottom: 1.2rem; }
+        form textarea { min-height: 80px; resize: vertical; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; border: none; text-decoration: none; }
+        .btn i { margin-right: 0.5rem; }
+        .btn-primary { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; box-shadow: 0 4px 10px rgba(22, 96, 136, 0.2); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(22, 96, 136, 0.3); }
+        .btn-light { background: var(--light); color: var(--secondary); border: 1px solid #eee; }
+        .btn-light:hover { background: #e9ecef; }
+        .form-actions { display: flex; gap: 1rem; justify-content: flex-start; }
+        .back-btn { margin-top: 1.5rem; display: inline-flex; align-items: center; background: var(--light); color: var(--secondary); border: 1px solid #eee; padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: 500; text-decoration: none; transition: all 0.2s; }
+        .back-btn i { margin-right: 0.5rem; }
+        .back-btn:hover { background: #e9ecef; }
+        @media (max-width: 992px) { .sidebar { width: 80px; overflow: hidden; } .logo-text, .menu-item span { display: none; } .menu-item { justify-content: center; padding: 0.75rem; } .menu-item i { margin-right: 0; font-size: 1.25rem; } .main-content { margin-left: 80px; } }
+        @media (max-width: 768px) { .header { flex-direction: column; align-items: flex-start; gap: 1rem; } form { max-width: 100%; } }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span class="logo-text">ACADEMY MEDICAL</span>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="{{ url_for('staff_dashboard') }}" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('view_medical_records') }}" class="menu-item active">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+                <a href="{{ url_for('view_appointments') }}" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="{{ url_for('view_vaccination_data') }}" class="menu-item">
+                    <i class="fas fa-syringe"></i>
+                    <span>Vaccinations</span>
+                </a>
+                <a href="{{ url_for('view_sent_alerts') }}" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Health Alerts</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Update Medical Record</h1>
+            </div>
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h2>Edit Medical Record</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <label for="height_cm">Height (cm):</label>
+                        <input type="number" name="height_cm" value="{{ record.height_cm }}" required>
+
+                        <label for="weight_kg">Weight (kg):</label>
+                        <input type="number" name="weight_kg" value="{{ record.weight_kg }}" required>
+
+                        <label for="blood_type">Blood Type:</label>
+                        <select name="blood_type" required>
+                            <option value="A" {% if record.blood_type == 'A' %} selected {% endif %}>A</option>
+                            <option value="B" {% if record.blood_type == 'B' %} selected {% endif %}>B</option>
+                            <option value="AB" {% if record.blood_type == 'AB' %} selected {% endif %}>AB</option>
+                            <option value="O" {% if record.blood_type == 'O' %} selected {% endif %}>O</option>
+                        </select>
+
+                        <label for="allergies">Allergies:</label>
+                        <input type="text" name="allergies" value="{{ record.allergies }}">
+
+                        <label for="medical_conditions">Medical Conditions:</label>
+                        <input type="text" name="medical_conditions" value="{{ record.medical_conditions }}">
+
+                        <label for="current_medications">Current Medications:</label>
+                        <input type="text" name="current_medications" value="{{ record.current_medications }}">
+
+                        <label for="immunization_status">Immunization Status:</label>
+                        <input type="text" name="immunization_status" value="{{ record.immunization_status }}">
+
+                        <label for="vision_test_result">Vision Test Result:
+                            <span class="info-icon" onclick="showInfo('vision')"><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <input type="text" name="vision_test_result" value="{{ record.vision_test_result }}">
+
+                        <label for="hearing_test_result">Hearing Test Result:
+                            <span class="info-icon" onclick="showInfo('hearing')"><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <input type="text" name="hearing_test_result" value="{{ record.hearing_test_result }}">
+
+                        <label for="general_diagnosis">General Diagnosis:
+                            <span class="info-icon" onclick="showInfo('diagnosis')"><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <textarea name="general_diagnosis">{{ record.general_diagnosis }}</textarea>
+
+                        <label for="treatment_plan">Treatment Plan:
+                            <span class="info-icon" onclick="showInfo('treatment')"><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <textarea name="treatment_plan">{{ record.treatment_plan }}</textarea>
+
+                        <label for="doctor_notes">Doctor's Notes:</label>
+                        <textarea name="doctor_notes">{{ record.doctor_notes }}</textarea>
+
+                        <label for="visit_date">Visit Date:</label>
+                        <input type="date" name="visit_date" value="{{ record.visit_date }}" required>
+
+                        <label for="next_follow_up">Next Follow-up Date:</label>
+                        <input type="date" name="next_follow_up" value="{{ record.next_follow_up }}">
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Record</button>
+                            <a href="{{ url_for('view_medical_records') }}" class="btn btn-light"><i class="fas fa-arrow-left"></i> Back to Records</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Info tooltips
+    function showInfo(type) {
+        let msg = '';
+        if (type === 'vision') msg = 'Vision Test Result: Enter the result of the student\'s vision screening (e.g., 20/20, needs glasses, etc.). Optional but recommended.';
+        if (type === 'hearing') msg = 'Hearing Test Result: Enter the result of the student\'s hearing screening (e.g., normal, mild loss, etc.). Optional but recommended.';
+        if (type === 'diagnosis') msg = 'General Diagnosis: Provide a summary of the main findings or diagnosis from this visit. Required for medical documentation.';
+        if (type === 'treatment') msg = 'Treatment Plan: Outline the recommended treatment, medications, or follow-up care. Required if any action is needed.';
+        alert(msg);
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Health Reminders - Academy Medical Clinic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --danger: #dc3545;
+            --success: #28a745;
+            --text: #444;
+        }
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: var(--text); margin: 0; }
+        .container { max-width: 900px; margin: 2rem auto; padding: 1.5rem; background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+        h1 { color: var(--secondary); margin-bottom: 1.5rem; }
+        .reminder-card { display: flex; align-items: flex-start; background: #f8f9fa; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 1.2rem; padding: 1.2rem 1.5rem; gap: 1.2rem; }
+        .reminder-card .fa-bell { color: var(--accent); font-size: 1.5rem; margin-top: 0.2rem; }
+        .reminder-content { flex: 1; }
+        .reminder-content h3 { margin: 0 0 0.3rem 0; color: var(--secondary); font-size: 1.1rem; }
+        .reminder-content p { margin: 0 0 0.2rem 0; font-size: 0.98rem; }
+        .reminder-time { font-size: 0.9rem; color: #888; margin-bottom: 0.2rem; }
+        .btn { padding: 0.45rem 1.1rem; border: none; border-radius: 6px; background: var(--success); color: #fff; font-weight: 500; cursor: pointer; transition: background 0.2s; font-size: 0.97rem; }
+        .btn:disabled { background: #bdbdbd; cursor: not-allowed; }
+        .btn-back { background: var(--primary); margin-bottom: 1.5rem; }
+        @media (max-width: 600px) { .container { padding: 0.5rem; } .reminder-card { flex-direction: column; gap: 0.7rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <h1><i class="fas fa-bell"></i> All Health Reminders</h1>
+        {% if reminders and reminders|length > 0 %}
+            {% for reminder in reminders %}
+            <div class="reminder-card">
+                <i class="fas fa-bell"></i>
+                <div class="reminder-content">
+                    <h3>{{ reminder.subject }}</h3>
+                    <p>{{ reminder.message }}</p>
+                    <div class="reminder-time">{{ reminder.sent_at.strftime('%b %d, %Y %I:%M %p') if reminder.sent_at else '' }}</div>
+                </div>
+                {% if not reminder.is_read %}
+                <button class="btn mark-reminder-read" data-id="{{ reminder.notification_id }}">Mark as Read</button>
+                {% else %}
+                <button class="btn" disabled>Read</button>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align:center; color:var(--secondary); font-size:1.1rem;">No health reminders found.</div>
+        {% endif %}
+    </div>
+    <script>
+    // AJAX Mark as Read for Health Reminders
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.mark-reminder-read').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const notifId = this.getAttribute('data-id');
+                fetch(`/mark_notification_read/${notifId}`, {method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'}})
+                    .then(resp => {
+                        if (resp.status === 204) {
+                            this.textContent = 'Read';
+                            this.disabled = true;
+                        }
+                    });
+            });
+        });
+    });
+    </script>
+</body>
+</html> 
